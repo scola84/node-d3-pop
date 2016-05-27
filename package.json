@@ -1,0 +1,30 @@
+{
+  "name": "@scola/gui-pop",
+  "version": "0.0.0",
+  "description": "Pop Up/Out/Action",
+  "repository": "github:scola84/node-gui-pop",
+  "author": "M.C. van den Boogaart <scola@kvdb.name>",
+  "license": "MIT",
+  "main": "index.js",
+  "dependencies": {
+    "d3-selection": "^0.7.3",
+    "d3-selection-multi": "^0.2.10",
+    "d3-transition": "^0.2.10"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "babelify": "^7.3.0"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
+  }
+}
