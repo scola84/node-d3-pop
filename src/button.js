@@ -1,13 +1,13 @@
-const d3 = require('d3-selection');
-require('d3-selection-multi');
+import { select } from 'd3-selection';
+import 'd3-selection-multi';
 
-class Button {
+export default class Button {
   constructor() {
     this.build();
   }
 
   build() {
-    this.outer = d3.select(document.createElement('div'))
+    this.outer = select(document.createElement('div'))
       .classed('scola button', true)
       .styles({
         'background': '#FFF',
@@ -28,5 +28,3 @@ class Button {
     return this.outer.node();
   }
 }
-
-module.exports = Button;

@@ -1,16 +1,16 @@
-const d3 = require('d3-selection');
-require('d3-selection-multi');
-require('d3-transition');
+import { select, event } from 'd3-selection';
+import 'd3-selection-multi';
+import 'd3-transition';
 
-class Over {
+export default class PopOver {
   constructor(container) {
     this.container = container;
     this.build();
   }
 
   build() {
-    this.outer = d3.select(document.createElement('div'))
-      .classed('scola over', true)
+    this.outer = select(document.createElement('div'))
+      .classed('scola popover', true)
       .styles({
         'align-items': 'center',
         'background': 'rgba(0, 0, 0, 0.5)',
@@ -59,12 +59,10 @@ class Over {
   }
 
   handleInnerClick() {
-    d3.event.stopPropagation();
+    event.stopPropagation();
   }
 
   handleEnd() {
     this.container.remove(this);
   }
 }
-
-module.exports = Over;

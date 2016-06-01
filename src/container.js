@@ -1,15 +1,11 @@
-const Button = require('./button');
-const Over = require('./over');
-const Up = require('./up');
+import { select, selection, event } from 'd3-selection';
+import 'd3-selection-multi';
+import 'd3-transition';
 
-const d3 = require('d3-selection');
-require('d3-selection-multi');
-require('d3-transition');
-
-class Pop {
+export default class Pop {
   constructor() {
     this.children = new Set();
-    this.outer = d3.select('body>div.pop');
+    this.outer = select('body>div.pop');
 
     if (this.outer.empty()) {
       this.build();
@@ -17,7 +13,7 @@ class Pop {
   }
 
   build() {
-    this.outer = d3.select('body')
+    this.outer = select('body')
       .append('div')
       .classed('scola pop', true)
       .styles({
@@ -30,11 +26,11 @@ class Pop {
         'z-index': 1000
       });
 
-    d3.selection().on('keyup.scola-pop', this.handleKeyUp.bind(this));
+    selection().on('keyup.scola-pop', this.handleKeyUp.bind(this));
   }
 
   destroy() {
-    d3.selection().on('keyup.scola-pop', null);
+    selection().on('keyup.scola-pop', null);
 
     this.children.forEach((child) => child.destroy());
     this.outer.remove();
@@ -42,18 +38,6 @@ class Pop {
 
   node() {
     return this.outer.node();
-  }
-
-  over() {
-    return new Over(this);
-  }
-
-  up() {
-    return new Up(this);
-  }
-
-  button() {
-    return new Button();
   }
 
   append(child) {
@@ -69,7 +53,7 @@ class Pop {
   }
 
   handleKeyUp() {
-    if (d3.event.keyCode === 27 && this.children.size > 0) {
+    if (event.keyCode === 27 && this.children.size > 0) {
       [...this.children].pop().destroy();
     }
   }
@@ -86,5 +70,3 @@ class Pop {
     }
   }
 }
-
-module.exports = Pop;
