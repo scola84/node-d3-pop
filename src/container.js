@@ -1,13 +1,9 @@
 import { select, selection, event } from 'd3-selection';
 
-export default class Pop {
+export default class Container {
   constructor() {
     this.children = new Set();
-    this.outer = select('body>div.pop');
-
-    if (this.outer.empty()) {
-      this.build();
-    }
+    this.build();
   }
 
   build() {
@@ -41,13 +37,15 @@ export default class Pop {
   append(child) {
     this.children.add(child);
     this.node().appendChild(child.node());
-    this.show();
+
+    return this.show();
   }
 
   remove(child) {
     this.children.delete(child);
     child.node().remove();
-    this.hide();
+
+    return this.hide();
   }
 
   handleKeyUp() {
@@ -60,11 +58,15 @@ export default class Pop {
     if (this.children.size === 1) {
       this.outer.style('display', 'block');
     }
+
+    return this;
   }
 
   hide() {
     if (this.children.size === 0) {
       this.outer.style('display', 'none');
     }
+
+    return this;
   }
 }
