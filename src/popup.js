@@ -1,4 +1,4 @@
-import { select, event } from 'd3-selection';
+import { select } from 'd3-selection';
 
 export default class PopUp {
   constructor(container) {
@@ -20,8 +20,7 @@ export default class PopUp {
         'position': 'fixed',
         'right': 0,
         'top': 0
-      })
-      .on('click.scola-pop', this.handleOuterClick.bind(this));
+      });
 
     this.outer
       .transition()
@@ -36,8 +35,7 @@ export default class PopUp {
         'height': 'auto',
         'overflow': 'hidden',
         'width': '17em'
-      })
-      .on('click.scola-pop', this.handleInnerClick.bind(this));
+      });
 
     this.body = this.inner
       .append('div')
@@ -85,22 +83,12 @@ export default class PopUp {
     this.outer
       .transition()
       .style('opacity', 0)
-      .on('end', this.handleEnd.bind(this));
+      .on('end', () => {
+        this.container.remove(this);
+      });
   }
 
   node() {
     return this.outer.node();
-  }
-
-  handleOuterClick() {
-    this.destroy();
-  }
-
-  handleInnerClick() {
-    event.stopPropagation();
-  }
-
-  handleEnd() {
-    this.container.remove(this);
   }
 }
