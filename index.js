@@ -1,5 +1,6 @@
 import Button from './src/button';
 import Container from './src/container';
+import PopOut from './src/popout';
 import PopOver from './src/popover';
 import PopUp from './src/popup';
 
@@ -15,6 +16,10 @@ export function container() {
   }
 
   return instance;
+}
+
+export function popout(options) {
+  return new PopOut(container(), options);
 }
 
 export function popover(options) {
