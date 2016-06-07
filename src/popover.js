@@ -1,13 +1,20 @@
 import { select, event } from 'd3-selection';
 
 export default class PopOver {
-  constructor(container) {
+  constructor(container, options) {
     this.container = container;
+
+    this.options = Object.assign({
+      height: '39em',
+      width: '34em'
+    }, options);
+
     this.build();
   }
 
   build() {
-    this.outer = select(document.createElement('div'))
+    this.outer = select('body')
+      .append('div')
       .classed('scola popover', true)
       .styles({
         'align-items': 'center',
@@ -21,7 +28,9 @@ export default class PopOver {
         'right': 0,
         'top': 0
       })
-      .on('click.scola-pop', this.handleOuterClick.bind(this));
+      .on('click', () => {
+        this.destroy();
+      });
 
     this.outer
       .transition()
@@ -34,33 +43,83 @@ export default class PopOver {
         'background': '#FFF',
         'height': '100%',
         'overflow': 'hidden',
-        'position': 'relative',
         'transform': 'scale(1)',
         'width': '100%'
       })
-      .on('click.scola-pop', this.handleInnerClick.bind(this));
+      .on('click', () => {
+        event.stopPropagation();
+      });
+
+    this.media = this.inner
+      .media('(min-width: ' + this.options.width + ')')
+      .styles({
+        'height': this.options.height,
+        'width': this.options.width
+      })
+      .start();
+
+    const {
+      bodyHeight,
+      bodyWidth,
+      innerHeight,
+      innerWidth
+    } = this.dimensions();
+
+    this.inner.styles({
+      position: 'absolute',
+      top: bodyHeight,
+      left: (bodyWidth - innerWidth) / 2
+    });
+
+    this.inner.transition()
+      .style('top', (bodyHeight - innerHeight) / 2 + 'px')
+      .on('end', () => {
+        this.inner.styles({
+          'position': 'relative',
+          'top': null,
+          'left': null
+        });
+      });
   }
 
   destroy() {
+    this.media.destroy();
+
+    const {
+      bodyHeight,
+      bodyWidth,
+      innerHeight,
+      innerWidth
+    } = this.dimensions();
+
+    this.inner.styles({
+      position: 'absolute',
+      top: (bodyHeight - innerHeight) / 2,
+      left: (bodyWidth - innerWidth) / 2
+    });
+
+    this.inner
+      .transition()
+      .style('top', bodyHeight + 'px');
+
     this.outer
       .transition()
       .style('opacity', 0)
-      .on('end', this.handleEnd.bind(this));
+      .on('end', () => {
+        this.container.remove(this);
+      });
   }
 
   node() {
     return this.outer.node();
   }
 
-  handleOuterClick() {
-    this.destroy();
-  }
-
-  handleInnerClick() {
-    event.stopPropagation();
-  }
-
-  handleEnd() {
-    this.container.remove(this);
+  dimensions() {
+    return {
+      bodyHeight: parseFloat(select('body').style('height'), 10),
+      bodyWidth: parseFloat(select('body').style('width'), 10),
+      innerWidth: parseFloat(this.inner.style('width'), 10),
+      innerHeight: parseFloat(this.inner.style('height'), 10)
+    };
   }
 }

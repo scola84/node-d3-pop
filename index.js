@@ -17,8 +17,8 @@ export function container() {
   return instance;
 }
 
-export function popover() {
-  return new PopOver(container());
+export function popover(options) {
+  return new PopOver(container(), options);
 }
 
 export function popup() {
