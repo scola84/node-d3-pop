@@ -8,8 +8,9 @@ export default class PopOut {
     this.container = container;
 
     this.options = Object.assign({
-      height: '21.333em',
-      width: '21.333em'
+      'border-radius': '1em',
+      'height': '21.333em',
+      'width': '21.333em'
     }, options);
 
     this.fontSize = parseFloat(select('body').style('font-size'));
@@ -85,7 +86,8 @@ export default class PopOut {
       .call(() => {
         this.fullScreen(true);
       })
-      .media('(min-width: ' + this.options.width + ') and (min-height: ' + this.options.height + ')')
+      .media('(min-width: ' + this.options.width + ') and ' +
+        '(min-height: ' + this.options.height + ')')
       .styles(this.options)
       .call(() => {
         this.fullScreen(false);
