@@ -7,7 +7,8 @@ export default class PopUp {
   }
 
   build() {
-    this.outer = select(document.createElement('div'))
+    this.outer = select('body')
+      .append('div')
       .classed('scola popup', true)
       .styles({
         'align-items': 'center',
@@ -72,7 +73,8 @@ export default class PopUp {
       .classed('scola buttons', true)
       .styles({
         'display': 'flex',
-        'float': 'left',
+        'flex-direction': 'row',
+        'height': '3em',
         'width': '100%'
       });
 

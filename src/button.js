@@ -6,7 +6,8 @@ export default class Button {
   }
 
   build() {
-    this.outer = select(document.createElement('div'))
+    this.outer = select('body')
+      .append('button')
       .classed('scola button', true)
       .styles({
         'background': '#FFF',
@@ -14,6 +15,7 @@ export default class Button {
         'border-left': '1px solid #CCC',
         'border-top': '1px solid #CCC',
         'cursor': 'pointer',
+        'flex': 1,
         'height': '3em',
         'line-height': '3em',
         'padding': 0,
