@@ -1,12 +1,14 @@
 import { select, event } from 'd3-selection';
+import { slider } from '@scola/d3-slider';
 
 export default class PopOver {
   constructor(container, options) {
     this.container = container;
 
     this.options = Object.assign({
-      height: '39em',
-      width: '34em'
+      'border-radius': '1em',
+      'height': '39em',
+      'width': '34em'
     }, options);
 
     this.build();
@@ -51,11 +53,9 @@ export default class PopOver {
       });
 
     this.media = this.inner
-      .media('(min-width: ' + this.options.width + ')')
-      .styles({
-        'height': this.options.height,
-        'width': this.options.width
-      })
+      .media('(min-width: ' + this.options.width + ') and ' +
+        '(min-height: ' + this.options.height + ')')
+      .styles(this.options)
       .start();
 
     const {
@@ -82,6 +82,15 @@ export default class PopOver {
       });
   }
 
+  slider() {
+    if (!this._slider) {
+      this._slider = slider();
+      this.inner.node().appendChild(this._slider.root().node());
+    }
+
+    return this._slider;
+  }
+
   destroy() {
     this.media.destroy();
 
@@ -106,6 +115,7 @@ export default class PopOver {
       .transition()
       .style('opacity', 0)
       .on('end', () => {
+        this.outer.dispatch('destroy');
         this.container.remove(this);
       });
   }

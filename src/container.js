@@ -25,7 +25,6 @@ export default class Container {
 
   destroy() {
     selection().on('keyup.scola-pop', null);
-
     this.children.forEach((child) => child.destroy());
     this.outer.remove();
   }
