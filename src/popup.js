@@ -1,13 +1,13 @@
-import { select } from 'd3-selection';
+import { event, select } from 'd3-selection';
+import Body from './body';
 
 export default class PopUp {
   constructor(container) {
-    this.container = container;
-    this.build();
-  }
+    this._container = container;
 
-  build() {
-    this.outer = select('body')
+    this._body = null;
+
+    this._root = select('body')
       .append('div')
       .classed('scola popup', true)
       .styles({
@@ -21,76 +21,72 @@ export default class PopUp {
         'position': 'fixed',
         'right': 0,
         'top': 0
-      });
+      })
+      .on('click.scola-popup', () => this.destroy());
 
-    this.outer
-      .transition()
-      .style('opacity', 1);
-
-    this.inner = this.outer
+    this._inner = this._root
       .append('div')
       .classed('scola inner', true)
       .styles({
         'background': '#FFF',
         'border-radius': '1em',
-        'height': 'auto',
+        'display': 'flex',
+        'flex-direction': 'column',
         'overflow': 'hidden',
         'width': '17em'
-      });
+      })
+      .on('click.scola-popup', () => event.stopPropagation());
 
-    this.body = this.inner
-      .append('div')
-      .classed('scola body', true)
-      .styles({
-        'float': 'left',
-        'padding': '1em',
-        'text-align': 'center',
-        'width': '100%'
-      });
+    this._root
+      .transition()
+      .style('opacity', 1);
 
-    this.title = this.body
-      .append('div')
-      .classed('scola title', true)
-      .styles({
-        'float': 'left',
-        'font-size': '1.2em',
-        'font-weight': 'bold',
-        'padding': '0 0 0.5em',
-        'width': '100%'
-      });
-
-    this.text = this.body
-      .append('div')
-      .classed('scola text', true)
-      .styles({
-        'float': 'left',
-        'line-height': '1.5em',
-        'width': '100%'
-      });
-
-    this.buttons = this.inner
-      .append('div')
-      .classed('scola buttons', true)
-      .styles({
-        'display': 'flex',
-        'flex-direction': 'row',
-        'height': '3em',
-        'width': '100%'
-      });
-
-    this.container.append(this);
+    this._container.append(this);
   }
 
   destroy() {
-    this.outer
+    this._root.on('click.scola-popup', null);
+    this._inner.on('click.scola-popup', null);
+
+    this._root
       .transition()
       .style('opacity', 0)
       .on('end', () => {
-        this.container.remove(this);
+        if (this._body) {
+          this._body.destroy();
+          this._body = null;
+        }
+
+        this._container.append(this, false);
+        this._container = null;
+
+        this._root.dispatch('destroy');
+        this._root.remove();
+        this._root = null;
       });
   }
 
-  node() {
-    return this.outer.node();
+  root() {
+    return this._root;
+  }
+
+  body(action) {
+    if (typeof action === 'undefined') {
+      return this._body;
+    }
+
+    if (action === false) {
+      this._body.destroy();
+      this._body = null;
+
+      return this;
+    }
+
+    this._body = new Body();
+    this._body.direction('row');
+
+    this._inner.node().appendChild(this._body.root().node());
+
+    return this;
   }
 }

@@ -1,29 +1,27 @@
 /* eslint prefer-reflect: "off" */
 
-import { select, event } from 'd3-selection';
-import { debounce } from 'lodash-es';
+import { event, select } from 'd3-selection';
+import { slider } from '@scola/d3-slider';
+import debounce from 'lodash-es/debounce.js';
 
 export default class PopOut {
-  constructor(container, options) {
-    this.container = container;
+  constructor(container) {
+    this._container = container;
 
-    this.options = Object.assign({
-      'border-radius': '1em',
-      'height': '21.333em',
-      'width': '21.333em'
-    }, options);
+    this._fontSize = parseFloat(select('body').style('font-size'));
+    this._isFullScreen = null;
+    this._positions = [];
 
-    this.fontSize = parseFloat(select('body').style('font-size'));
-    this.isFullScreen = null;
-    this.positions = [];
+    this._width = null;
+    this._height = null;
+    this._styles = null;
 
-    this.build();
-  }
+    this._media = null;
+    this._slider = null;
 
-  build() {
-    this.outer = select('body')
+    this._root = select('body')
       .append('div')
-      .classed('scola out', true)
+      .classed('scola popout', true)
       .styles({
         'background': 'rgba(0, 0, 0, 0.5)',
         'bottom': 0,
@@ -33,13 +31,9 @@ export default class PopOut {
         'right': 0,
         'top': 0
       })
-      .on('click', () => {
-        this.destroy();
-      });
+      .on('click.scola-popout', () => this.destroy());
 
-    this.outer.transition().style('opacity', 1);
-
-    this.wrapper = this.outer
+    this._wrapper = this._root
       .append('div')
       .classed('scola wrapper', true)
       .styles({
@@ -48,7 +42,7 @@ export default class PopOut {
         'width': '100%'
       });
 
-    this.inner = this.wrapper
+    this._inner = this._wrapper
       .append('div')
       .classed('scola inner', true)
       .styles({
@@ -60,11 +54,9 @@ export default class PopOut {
         'transform': 'scale(1)',
         'width': '100%'
       })
-      .on('click', () => {
-        event.stopPropagation();
-      });
+      .on('click.scola-popout', () => event.stopPropagation());
 
-    this.triangle = this.wrapper
+    this._triangle = this._wrapper
       .append('div')
       .classed('scola triangle', true)
       .styles({
@@ -77,103 +69,272 @@ export default class PopOut {
         'z-index': 2
       });
 
-    this.media = this.wrapper
-      .media('not all and (min-width: ' + this.options.width + ')')
-      .call(() => {
-        this.fullScreen(true);
-      })
-      .media('not all and (min-height: ' + this.options.height + ')')
-      .call(() => {
-        this.fullScreen(true);
-      })
-      .media('(min-width: ' + this.options.width + ') and ' +
-        '(min-height: ' + this.options.height + ')')
-      .styles(this.options)
-      .call(() => {
-        this.fullScreen(false);
-      })
-      .start();
+    this._root
+      .transition()
+      .style('opacity', 1);
 
-    this.debouncer = debounce(this.rerender.bind(this), 250);
-    window.addEventListener('resize', this.debouncer);
+    this._debouncer = debounce(this._rerender.bind(this), 250);
+    select(window).on('resize.scola-popout', this._debouncer);
 
-    this.container.append(this);
-  }
-
-  node() {
-    return this.outer.node();
+    this._container.append(this);
   }
 
   destroy() {
-    window.removeEventListener('resize', this.debouncer);
-    this.media.destroy();
+    select(window).on('resize.scola-popout', null);
 
-    this.outer
+    this._root.on('click.scola-popout', null);
+    this._inner.on('click.scola-popout', null);
+
+    this._root
       .transition()
       .style('opacity', 0)
       .on('end', () => {
-        this.container.remove(this);
+        if (this._media) {
+          this._media.destroy();
+          this._media = null;
+        }
+
+        if (this._slider) {
+          this._slider.destroy();
+          this._slider = null;
+        }
+
+        this._container.append(this, false);
+        this._container = null;
+
+        this._root.dispatch('destroy');
+        this._root.remove();
+        this._root = null;
       });
   }
 
+  inner() {
+    return this._inner;
+  }
+
+  root() {
+    return this._root;
+  }
+
+  media(width = '21.333em', height = '21.333em', styles = {}) {
+    if (width === null) {
+      return this._media;
+    }
+
+    if (width === false) {
+      this._media.destroy();
+      this._media = null;
+
+      return this;
+    }
+
+    this._width = width;
+    this._height = height;
+    this._styles = Object.assign({
+      'border-radius': '1em'
+    }, styles);
+
+    this._media = this._wrapper
+      .media(`not all and (min-width: ${width})`)
+      .call(() => this._fullScreen(true))
+      .media(`not all and (min-height: ${height})`)
+      .call(() => this._fullScreen(true))
+      .media(`(min-width: ${width}) and (min-height: ${height})`)
+      .style('width', width)
+      .style('height', height)
+      .styles(this._styles)
+      .call(() => this._fullScreen(false))
+      .start();
+
+    return this;
+  }
+
+  slider(action) {
+    if (typeof action === 'undefined') {
+      return this._slider;
+    }
+
+    if (action === false) {
+      this._slider.destroy();
+      this._slider = null;
+
+      return this;
+    }
+
+    this._slider = slider()
+      .remove(true)
+      .rotate(false);
+
+    this._inner.node()
+      .appendChild(this._slider.root().node());
+
+    return this;
+  }
+
   anchor(element) {
-    this.anchorElement = element;
+    this._anchorElement = element;
     return this;
   }
 
   inside(element) {
-    this.insideElement = element;
+    this._insideElement = element;
     return this;
   }
 
   left() {
-    this.positions.push('left');
+    this._positions.push('left');
 
-    if (this.isFullScreen) {
+    if (this._fullScreen()) {
       return this;
     }
 
-    if (this.insideElement) {
-      this.leftInside();
+    if (this._insideElement) {
+      this._leftInside();
     } else {
-      this.leftAnchor();
+      this._leftAnchor();
     }
 
-    if (this.positions.length === 1) {
-      this.leftTriangleVertical();
+    if (this._positions.length === 1) {
+      this._leftTriangleVertical();
     } else {
-      this.leftTriangleHorizontal();
+      this._leftTriangleHorizontal();
     }
 
     return this;
   }
 
-  leftInside() {
-    const position = this.getPosition(this.insideElement);
-    this.wrapper.style('left', position.x + (this.fontSize / 2));
+  right() {
+    this._positions.push('right');
 
-    return this;
-  }
+    if (this._fullScreen()) {
+      return this;
+    }
 
-  leftAnchor() {
-    const position = this.getPosition(this.anchorElement);
-    const dimensions = this.getDimensions(this.anchorElement);
+    if (this._insideElement) {
+      this._rightInside();
+    } else {
+      this._rightAnchor();
+    }
 
-    if (this.positions.length === 2) {
-      this.wrapper.style('left', position.x);
-    } else if (this.positions.length === 1) {
-      this.wrapper.style('left', position.x + dimensions.width);
+    if (this._positions.length === 1) {
+      this._rightTriangleVertical();
+    } else {
+      this._rightTriangleHorizontal();
     }
 
     return this;
   }
 
-  leftTriangleHorizontal() {
-    const anchorPosition = this.getPosition(this.anchorElement);
-    const anchorDimensions = this.getDimensions(this.anchorElement);
-    const innerPosition = this.getPosition(this.wrapper);
+  center() {
+    this._positions.push('center');
 
-    this.triangle.styles({
+    if (this._fullScreen()) {
+      return this;
+    }
+
+    if (this._insideElement) {
+      this._centerInside();
+    } else {
+      this._centerAnchor();
+    }
+
+    if (this._positions.length === 2) {
+      this._centerTriangleHorizontal();
+    }
+
+    return this;
+  }
+
+  top() {
+    this._positions.push('top');
+
+    if (this._fullScreen()) {
+      return this;
+    }
+
+    if (this._insideElement) {
+      this._topInside();
+    } else {
+      this._topAnchor();
+    }
+
+    if (this._positions.length === 1) {
+      this._topTriangleHorizontal();
+    } else {
+      this._topTriangleVertical();
+    }
+
+    return this;
+  }
+
+  bottom() {
+    this._positions.push('bottom');
+
+    if (this._fullScreen()) {
+      return this;
+    }
+
+    if (this._insideElement) {
+      this._bottomInside();
+    } else {
+      this._bottomAnchor();
+    }
+
+    if (this._positions.length === 1) {
+      this._bottomTriangleHorizontal();
+    } else {
+      this._bottomTriangleVertical();
+    }
+
+    return this;
+  }
+
+  middle() {
+    this._positions.push('middle');
+
+    if (this._fullScreen()) {
+      return this;
+    }
+
+    if (this._insideElement) {
+      this._middleInside();
+    } else {
+      this._middleAnchor();
+    }
+
+    if (this._positions.length === 2) {
+      this._middleTriangleVertical();
+    }
+
+    return this;
+  }
+
+  _leftInside() {
+    const position = this._getPosition(this._insideElement);
+    this._wrapper.style('left', position.x + (this._fontSize / 2));
+
+    return this;
+  }
+
+  _leftAnchor() {
+    const position = this._getPosition(this._anchorElement);
+    const dimensions = this._getDimensions(this._anchorElement);
+
+    if (this._positions.length === 2) {
+      this._wrapper.style('left', position.x);
+    } else if (this._positions.length === 1) {
+      this._wrapper.style('left', position.x + dimensions.width);
+    }
+
+    return this;
+  }
+
+  _leftTriangleHorizontal() {
+    const anchorPosition = this._getPosition(this._anchorElement);
+    const anchorDimensions = this._getDimensions(this._anchorElement);
+    const innerPosition = this._getPosition(this._wrapper);
+
+    this._triangle.styles({
       'margin-left': '-0.75em',
       'left': anchorPosition.x +
         (anchorDimensions.width / 2) -
@@ -181,76 +342,54 @@ export default class PopOut {
     });
   }
 
-  leftTriangleVertical() {
-    this.triangle.styles({
+  _leftTriangleVertical() {
+    this._triangle.styles({
       'border-right-color': '#FAFAFA',
       'border-left-width': 0,
       'margin-left': '-0.75em'
     });
 
-    this.wrapper.style('margin-left', '1em');
+    this._wrapper.style('margin-left', '1em');
   }
 
-  right() {
-    this.positions.push('right');
+  _rightInside() {
+    const insidePosition = this._getPosition(this._insideElement);
+    const insideDimensions = this._getDimensions(this._insideElement);
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    if (this.isFullScreen) {
-      return this;
-    }
-
-    if (this.insideElement) {
-      this.rightInside();
-    } else {
-      this.rightAnchor();
-    }
-
-    if (this.positions.length === 1) {
-      this.rightTriangleVertical();
-    } else {
-      this.rightTriangleHorizontal();
-    }
-
-    return this;
-  }
-
-  rightInside() {
-    const insidePosition = this.getPosition(this.insideElement);
-    const insideDimensions = this.getDimensions(this.insideElement);
-    const innerDimensions = this.getDimensions(this.wrapper);
-
-    this.wrapper.styles({
+    this._wrapper.styles({
       'left': insidePosition.x +
         insideDimensions.width -
         innerDimensions.width -
-        (this.fontSize / 2)
+        (this._fontSize / 2)
     });
 
     return this;
   }
 
-  rightAnchor() {
-    const anchorPosition = this.getPosition(this.anchorElement);
-    const anchorDimensions = this.getDimensions(this.anchorElement);
-    const innerDimensions = this.getDimensions(this.wrapper);
+  _rightAnchor() {
+    const anchorPosition = this._getPosition(this._anchorElement);
+    const anchorDimensions = this._getDimensions(this._anchorElement);
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    if (this.positions.length === 2) {
-      this.wrapper.style('left', anchorPosition.x +
+    if (this._positions.length === 2) {
+      this._wrapper.style('left', anchorPosition.x +
         anchorDimensions.width -
         innerDimensions.width);
-    } else if (this.positions.length === 1) {
-      this.wrapper.style('left', anchorPosition.x -
+    } else if (this._positions.length === 1) {
+      this._wrapper.style('left', anchorPosition.x -
         innerDimensions.width);
     }
 
     return this;
   }
 
-  rightTriangleHorizontal() {
-    const anchorPosition = this.getPosition(this.anchorElement);
-    const anchorDimensions = this.getDimensions(this.anchorElement);
-    const innerPosition = this.getPosition(this.wrapper);
+  _rightTriangleHorizontal() {
+    const anchorPosition = this._getPosition(this._anchorElement);
+    const anchorDimensions = this._getDimensions(this._anchorElement);
+    const innerPosition = this._getPosition(this._wrapper);
 
-    this.triangle.styles({
+    this._triangle.styles({
       'margin-left': '-0.75em',
       'left': anchorPosition.x +
         (anchorDimensions.width / 2) -
@@ -258,43 +397,23 @@ export default class PopOut {
     });
   }
 
-  rightTriangleVertical() {
-    this.triangle.styles({
+  _rightTriangleVertical() {
+    this._triangle.styles({
       'border-left-color': '#FAFAFA',
       'border-right-width': 0,
       'margin-right': '-0.75em',
       'right': 0
     });
 
-    this.wrapper.style('margin-left', '-1em');
+    this._wrapper.style('margin-left', '-1em');
   }
 
-  center() {
-    this.positions.push('center');
+  _centerInside() {
+    const insidePosition = this._getPosition(this._insideElement);
+    const insideDimensions = this._getDimensions(this._insideElement);
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    if (this.isFullScreen) {
-      return this;
-    }
-
-    if (this.insideElement) {
-      this.centerInside();
-    } else {
-      this.centerAnchor();
-    }
-
-    if (this.positions.length === 2) {
-      this.centerTriangleHorizontal();
-    }
-
-    return this;
-  }
-
-  centerInside() {
-    const insidePosition = this.getPosition(this.insideElement);
-    const insideDimensions = this.getDimensions(this.insideElement);
-    const innerDimensions = this.getDimensions(this.wrapper);
-
-    this.wrapper.styles({
+    this._wrapper.styles({
       'left': insidePosition.x +
         (insideDimensions.width / 2) -
         (innerDimensions.width / 2)
@@ -303,12 +422,12 @@ export default class PopOut {
     return this;
   }
 
-  centerAnchor() {
-    const anchorPosition = this.getPosition(this.anchorElement);
-    const anchorDimensions = this.getDimensions(this.anchorElement);
-    const innerDimensions = this.getDimensions(this.wrapper);
+  _centerAnchor() {
+    const anchorPosition = this._getPosition(this._anchorElement);
+    const anchorDimensions = this._getDimensions(this._anchorElement);
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    this.wrapper.styles({
+    this._wrapper.styles({
       'left': anchorPosition.x +
         (anchorDimensions.width / 2) -
         (innerDimensions.width / 2)
@@ -317,73 +436,51 @@ export default class PopOut {
     return this;
   }
 
-  centerTriangleHorizontal() {
-    const innerDimensions = this.getDimensions(this.wrapper);
+  _centerTriangleHorizontal() {
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    this.triangle.styles({
+    this._triangle.styles({
       'margin-left': '-0.75em',
       'left': innerDimensions.width / 2
     });
   }
 
-  top() {
-    this.positions.push('top');
+  _topInside() {
+    const position = this._getPosition(this._insideElement);
+    this._wrapper.style('top', position.y - (this._fontSize / 2));
 
-    if (this.isFullScreen) {
-      return this;
-    }
+    return this;
+  }
 
-    if (this.insideElement) {
-      this.topInside();
-    } else {
-      this.topAnchor();
-    }
+  _topAnchor() {
+    const position = this._getPosition(this._anchorElement);
+    const dimensions = this._getDimensions(this._anchorElement);
 
-    if (this.positions.length === 1) {
-      this.topTriangleHorizontal();
-    } else {
-      this.topTriangleVertical();
+    if (this._positions.length === 2) {
+      this._wrapper.style('top', position.y);
+    } else if (this._positions.length === 1) {
+      this._wrapper.style('top', position.y + dimensions.height);
     }
 
     return this;
   }
 
-  topInside() {
-    const position = this.getPosition(this.insideElement);
-    this.wrapper.style('top', position.y - (this.fontSize / 2));
-
-    return this;
-  }
-
-  topAnchor() {
-    const position = this.getPosition(this.anchorElement);
-    const dimensions = this.getDimensions(this.anchorElement);
-
-    if (this.positions.length === 2) {
-      this.wrapper.style('top', position.y);
-    } else if (this.positions.length === 1) {
-      this.wrapper.style('top', position.y + dimensions.height);
-    }
-
-    return this;
-  }
-
-  topTriangleHorizontal() {
-    this.triangle.styles({
+  _topTriangleHorizontal() {
+    this._triangle.styles({
       'border-bottom-color': '#FAFAFA',
       'border-top-width': 0,
       'margin-top': '-0.75em'
     });
 
-    this.wrapper.style('margin-top', '1em');
+    this._wrapper.style('margin-top', '1em');
   }
 
-  topTriangleVertical() {
-    const anchorPosition = this.getPosition(this.anchorElement);
-    const anchorDimensions = this.getDimensions(this.anchorElement);
-    const innerPosition = this.getPosition(this.wrapper);
+  _topTriangleVertical() {
+    const anchorPosition = this._getPosition(this._anchorElement);
+    const anchorDimensions = this._getDimensions(this._anchorElement);
+    const innerPosition = this._getPosition(this._wrapper);
 
-    this.triangle.styles({
+    this._triangle.styles({
       'margin-top': '-0.75em',
       'top': anchorPosition.y +
         (anchorDimensions.height / 2) -
@@ -391,76 +488,54 @@ export default class PopOut {
     });
   }
 
-  bottom() {
-    this.positions.push('bottom');
+  _bottomInside() {
+    const insidePosition = this._getPosition(this._insideElement);
+    const insideDimensions = this._getDimensions(this._insideElement);
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    if (this.isFullScreen) {
-      return this;
-    }
-
-    if (this.insideElement) {
-      this.bottomInside();
-    } else {
-      this.bottomAnchor();
-    }
-
-    if (this.positions.length === 1) {
-      this.bottomTriangleHorizontal();
-    } else {
-      this.bottomTriangleVertical();
-    }
-
-    return this;
-  }
-
-  bottomInside() {
-    const insidePosition = this.getPosition(this.insideElement);
-    const insideDimensions = this.getDimensions(this.insideElement);
-    const innerDimensions = this.getDimensions(this.wrapper);
-
-    this.wrapper.style('top', insidePosition.y +
+    this._wrapper.style('top', insidePosition.y +
       insideDimensions.height -
       innerDimensions.height +
-      (this.fontSize / 2)
+      (this._fontSize / 2)
     );
 
     return this;
   }
 
-  bottomAnchor() {
-    const anchorPosition = this.getPosition(this.anchorElement);
-    const anchorDimensions = this.getDimensions(this.anchorElement);
-    const innerDimensions = this.getDimensions(this.wrapper);
+  _bottomAnchor() {
+    const anchorPosition = this._getPosition(this._anchorElement);
+    const anchorDimensions = this._getDimensions(this._anchorElement);
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    if (this.positions.length === 2) {
-      this.wrapper.style('top', anchorPosition.y +
+    if (this._positions.length === 2) {
+      this._wrapper.style('top', anchorPosition.y +
         anchorDimensions.height -
         innerDimensions.height);
-    } else if (this.positions.length === 1) {
-      this.wrapper.style('top', anchorPosition.y -
+    } else if (this._positions.length === 1) {
+      this._wrapper.style('top', anchorPosition.y -
         innerDimensions.height);
     }
 
     return this;
   }
 
-  bottomTriangleHorizontal() {
-    this.triangle.styles({
+  _bottomTriangleHorizontal() {
+    this._triangle.styles({
       'border-top-color': '#FAFAFA',
       'border-bottom-width': 0,
       'bottom': 0,
       'margin-bottom': '-0.75em'
     });
 
-    this.wrapper.style('margin-top', '-1em');
+    this._wrapper.style('margin-top', '-1em');
   }
 
-  bottomTriangleVertical() {
-    const anchorPosition = this.getPosition(this.anchorElement);
-    const anchorDimensions = this.getDimensions(this.anchorElement);
-    const innerPosition = this.getPosition(this.wrapper);
+  _bottomTriangleVertical() {
+    const anchorPosition = this._getPosition(this._anchorElement);
+    const anchorDimensions = this._getDimensions(this._anchorElement);
+    const innerPosition = this._getPosition(this._wrapper);
 
-    this.triangle.styles({
+    this._triangle.styles({
       'margin-top': '-0.75em',
       'top': anchorPosition.y +
         (anchorDimensions.height / 2) -
@@ -468,32 +543,12 @@ export default class PopOut {
     });
   }
 
-  middle() {
-    this.positions.push('middle');
+  _middleInside() {
+    const insidePosition = this._getPosition(this._insideElement);
+    const insideDimensions = this._getDimensions(this._insideElement);
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    if (this.isFullScreen) {
-      return this;
-    }
-
-    if (this.insideElement) {
-      this.middleInside();
-    } else {
-      this.middleAnchor();
-    }
-
-    if (this.positions.length === 2) {
-      this.middleTriangleVertical();
-    }
-
-    return this;
-  }
-
-  middleInside() {
-    const insidePosition = this.getPosition(this.insideElement);
-    const insideDimensions = this.getDimensions(this.insideElement);
-    const innerDimensions = this.getDimensions(this.wrapper);
-
-    this.wrapper.style('top', insidePosition.y +
+    this._wrapper.style('top', insidePosition.y +
       (insideDimensions.height / 2) -
       (innerDimensions.height / 2)
     );
@@ -501,12 +556,12 @@ export default class PopOut {
     return this;
   }
 
-  middleAnchor() {
-    const anchorPosition = this.getPosition(this.anchorElement);
-    const anchorDimensions = this.getDimensions(this.anchorElement);
-    const innerDimensions = this.getDimensions(this.wrapper);
+  _middleAnchor() {
+    const anchorPosition = this._getPosition(this._anchorElement);
+    const anchorDimensions = this._getDimensions(this._anchorElement);
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    this.wrapper.style('top', anchorPosition.y +
+    this._wrapper.style('top', anchorPosition.y +
       (anchorDimensions.height / 2) -
       (innerDimensions.height / 2)
     );
@@ -514,48 +569,48 @@ export default class PopOut {
     return this;
   }
 
-  middleTriangleVertical() {
-    const innerDimensions = this.getDimensions(this.wrapper);
+  _middleTriangleVertical() {
+    const innerDimensions = this._getDimensions(this._wrapper);
 
-    this.triangle.styles({
+    this._triangle.styles({
       'margin-top': '-0.75em',
       'top': innerDimensions.height / 2
     });
   }
 
-  fullScreen(fullScreen) {
-    this.isFullScreen = fullScreen;
+  _fullScreen(fullScreen) {
+    if (typeof fullScreen === 'undefined') {
+      return this._isFullScreen;
+    }
+
+    this._isFullScreen = fullScreen;
 
     if (fullScreen) {
-      this.wrapper.styles({
+      this._wrapper.styles({
         'left': 0,
         'margin-left': null,
         'margin-top': null,
         'top': null
       });
 
-      this.triangle.style('display', 'none');
+      this._triangle.style('display', 'none');
     } else {
-      this.triangle.style('display', 'block');
+      this._triangle.style('display', 'block');
     }
 
     return this;
   }
 
-  rerender() {
-    const positions = this.positions;
-    this.positions = [];
+  _rerender() {
+    const positions = this._positions;
+    this._positions = [];
 
-    this.setPositions(...positions);
-  }
-
-  setPositions(...positions) {
     positions.forEach((position) => {
-      this.setPosition(position);
+      this._setPosition(position);
     });
   }
 
-  setPosition(position) {
+  _setPosition(position) {
     switch (position) {
       case 'left':
         this.left();
@@ -580,7 +635,7 @@ export default class PopOut {
     return this;
   }
 
-  getDimensions(element) {
+  _getDimensions(element) {
     const node = element.node();
 
     return {
@@ -589,7 +644,7 @@ export default class PopOut {
     };
   }
 
-  getPosition(element) {
+  _getPosition(element) {
     const position = {
       x: 0,
       y: 0

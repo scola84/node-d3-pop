@@ -1,20 +1,47 @@
+import Body from './body';
 import PopOut from './popout';
 
 export default class PopAction extends PopOut {
-  build() {
-    super.build();
+  constructor(container) {
+    super(container);
 
-    this.outer
+    this._body = null;
+
+    this._root
       .classed('out', false)
       .classed('action', true);
 
-    this.inner.styles({
-      'background': 'none',
-      'display': 'flex',
-      'flex-direction': 'column'
+    this._inner.styles({
+      'height': 'initial'
     });
+  }
 
-    const styles = Object.assign({}, this.options, {
+  destroy() {
+    if (this._mediaInner) {
+      this._mediaInner.destroy();
+      this._mediaInner = null;
+    }
+
+    super.destroy();
+  }
+
+  media(width = '21.333em', height = '21.333em', styles = {}) {
+    const result = super.media(width, height, styles);
+
+    if (width === null) {
+      return result;
+    }
+
+    if (width === false) {
+      this._mediaInner.destroy();
+      this._mediaInner = null;
+
+      return result;
+    }
+
+    width = this._width;
+    height = this._height;
+    styles = Object.assign({}, this._styles, {
       'bottom': '0.5em',
       'height': 'initial',
       'left': '0.5em',
@@ -22,16 +49,33 @@ export default class PopAction extends PopOut {
       'width': 'initial'
     });
 
-    this.innerMedia = this.inner
-      .media('not all and (min-width: ' + this.options.width + ')')
+    this._mediaInner = this._inner
+      .media(`not all and (min-width: ${width})`)
       .styles(styles)
-      .media('not all and (min-height: ' + this.options.height + ')')
+      .media(`not all and (min-height: ${height})`)
       .styles(styles)
       .start();
+
+    return result;
   }
 
-  destroy() {
-    this.innerMedia.destroy();
-    super.destroy();
+  body(action) {
+    if (typeof action === 'undefined') {
+      return this._body;
+    }
+
+    if (action === false) {
+      this._body.destroy();
+      this._body = null;
+
+      return this;
+    }
+
+    this._body = new Body();
+    this._body.direction('column');
+
+    this._inner.node().appendChild(this._body.root().node());
+
+    return this;
   }
 }

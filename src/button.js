@@ -2,11 +2,7 @@ import { select } from 'd3-selection';
 
 export default class Button {
   constructor() {
-    this.build();
-  }
-
-  build() {
-    this.outer = select('body')
+    this._root = select('body')
       .append('button')
       .classed('scola button', true)
       .styles({
@@ -23,17 +19,28 @@ export default class Button {
       });
   }
 
-  node() {
-    return this.outer.node();
+  destroy() {
+    this._root.dispatch('destroy');
+    this._root.remove();
+    this._root = null;
   }
 
-  top() {
-    this.outer.style('border-top-color', '#FFF');
-    return this;
+  root() {
+    return this._root;
   }
 
   left() {
-    this.outer.style('border-left-style', 'none');
+    this._root.style('border-left-style', 'none');
+    return this;
+  }
+
+  text(text) {
+    this._root.text(text);
+    return this;
+  }
+
+  top() {
+    this._root.style('border-top-style', 'none');
     return this;
   }
 }

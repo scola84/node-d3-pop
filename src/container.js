@@ -1,13 +1,10 @@
-import { select, selection, event } from 'd3-selection';
+import { event, select } from 'd3-selection';
 
 export default class Container {
   constructor() {
-    this.children = new Set();
-    this.build();
-  }
+    this._children = new Set();
 
-  build() {
-    this.outer = select('body')
+    this._root = select('body')
       .append('div')
       .classed('scola pop', true)
       .styles({
@@ -20,50 +17,53 @@ export default class Container {
         'z-index': 1000
       });
 
-    selection().on('keyup.scola-pop', this.handleKeyUp.bind(this));
+    select(window).on('keyup.scola-pop', this._handleKeyUp.bind(this));
   }
 
   destroy() {
-    selection().on('keyup.scola-pop', null);
-    this.children.forEach((child) => child.destroy());
-    this.outer.remove();
+    select(window).on('keyup.scola-pop', null);
+    this._children.forEach((child) => child.destroy());
+
+    this._root.dispatch('destroy');
+    this._root.remove();
+    this._root = null;
   }
 
-  node() {
-    return this.outer.node();
+  root() {
+    return this._root;
   }
 
-  append(child) {
-    this.children.add(child);
-    this.node().appendChild(child.node());
-
-    return this.show();
-  }
-
-  remove(child) {
-    this.children.delete(child);
-    child.node().remove();
-
-    return this.hide();
-  }
-
-  handleKeyUp() {
-    if (event.keyCode === 27 && this.children.size > 0) {
-      [...this.children].pop().destroy();
-    }
-  }
-
-  show() {
-    if (this.children.size === 1) {
-      this.outer.style('display', 'block');
+  append(child, action = true) {
+    if (action === true) {
+      this._children.add(child);
+      this._root.node().appendChild(child.root().node());
+      this._show();
+    } else if (action === false) {
+      this._children.delete(child);
+      child.root().node().remove();
+      this._hide();
     }
 
     return this;
   }
 
-  hide() {
-    if (this.children.size === 0) {
-      this.outer.style('display', 'none');
+  _handleKeyUp() {
+    if (event.keyCode === 27 && this._children.size > 0) {
+      [...this._children].pop().destroy();
+    }
+  }
+
+  _show() {
+    if (this._children.size === 1) {
+      this._root.style('display', 'block');
+    }
+
+    return this;
+  }
+
+  _hide() {
+    if (this._children.size === 0) {
+      this._root.style('display', 'none');
     }
 
     return this;
