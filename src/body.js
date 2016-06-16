@@ -52,19 +52,19 @@ export default class Body {
   }
 
   append(button, action = true) {
-    if (this._direction === 'column' ||
-      this._buttons.select('button').size() === 0) {
-
-      button.left();
-    }
-
-    if (this._direction === 'column' &&
-      this._buttons.select('button').size() === 0) {
-
-      button.top();
-    }
-
     if (action === true) {
+      if (this._direction === 'column' ||
+        this._buttons.select('button').size() === 0) {
+
+        button.left();
+      }
+
+      if (this._direction === 'column' &&
+        this._buttons.select('button').size() === 0) {
+
+        button.top();
+      }
+
       this._buttons.node().appendChild(button.root().node());
     } else if (action === false) {
       button.root().remove();
