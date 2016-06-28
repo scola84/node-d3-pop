@@ -19,7 +19,7 @@
     "uglify-js": "^2.6.2"
   },
   "scripts": {
-    "build": "rollup -c -n d3_pop -o dist/d3-pop.js",
+    "build": "rollup -c -n d3 -o dist/d3-pop.js",
     "build:min": "uglifyjs dist/d3-pop.js -c -m -o dist/d3-pop.min.js"
   }
 }
