@@ -21,6 +21,7 @@ export default class PopOut {
 
     this._root = select('body')
       .append('div')
+      .remove()
       .classed('scola popout', true)
       .styles({
         'background': 'rgba(0, 0, 0, 0.5)',

@@ -14,6 +14,7 @@ export default class PopOver {
 
     this._root = select('body')
       .append('div')
+      .remove()
       .classed('scola popover', true)
       .styles({
         'align-items': 'center',

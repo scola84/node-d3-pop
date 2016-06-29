@@ -4,6 +4,7 @@ export default class PopButton {
   constructor() {
     this._root = select('body')
       .append('button')
+      .remove()
       .classed('scola button', true)
       .styles({
         'background': '#FFF',

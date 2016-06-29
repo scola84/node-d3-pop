@@ -6,6 +6,7 @@ export default class Body {
 
     this._root = select('body')
       .append('div')
+      .remove()
       .classed('scola body', true)
       .styles({
         'display': 'flex',

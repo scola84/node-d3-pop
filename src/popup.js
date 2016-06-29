@@ -9,6 +9,7 @@ export default class PopUp {
 
     this._root = select('body')
       .append('div')
+      .remove()
       .classed('scola popup', true)
       .styles({
         'align-items': 'center',
