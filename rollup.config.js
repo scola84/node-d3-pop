@@ -12,7 +12,7 @@ export default {
   plugins: [
     resolve({
       jsnext: true,
-      skip: ['d3-selection']
+      skip: ['d3-selection', '@scola/d3-slider']
     }),
     commonjs(),
     babel({
