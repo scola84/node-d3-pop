@@ -6,6 +6,7 @@ export default class PopAction extends PopOut {
     super(container);
 
     this._body = null;
+    this._mediaInner = null;
 
     this._root
       .classed('out', false)
@@ -17,12 +18,37 @@ export default class PopAction extends PopOut {
   }
 
   destroy() {
+    if (this._body) {
+      this._body.destroy();
+      this._body = null;
+    }
+
     if (this._mediaInner) {
       this._mediaInner.destroy();
       this._mediaInner = null;
     }
 
     super.destroy();
+  }
+
+  body(action) {
+    if (typeof action === 'undefined') {
+      return this._body;
+    }
+
+    if (action === false) {
+      this._body.destroy();
+      this._body = null;
+
+      return this;
+    }
+
+    this._body = new Body();
+    this._body.direction('column');
+
+    this._inner.node().appendChild(this._body.root().node());
+
+    return this;
   }
 
   media(width = '21.333em', height = '21.333em', styles = {}) {
@@ -57,25 +83,5 @@ export default class PopAction extends PopOut {
       .start();
 
     return result;
-  }
-
-  body(action) {
-    if (typeof action === 'undefined') {
-      return this._body;
-    }
-
-    if (action === false) {
-      this._body.destroy();
-      this._body = null;
-
-      return this;
-    }
-
-    this._body = new Body();
-    this._body.direction('column');
-
-    this._inner.node().appendChild(this._body.root().node());
-
-    return this;
   }
 }

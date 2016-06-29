@@ -23,6 +23,7 @@ export default class Container {
   destroy() {
     this._unbind();
     this._children.forEach((child) => child.destroy());
+    this._children.clear();
 
     this._root.dispatch('destroy');
     this._root.remove();
