@@ -17,11 +17,11 @@ export default class Container {
         'z-index': 1000
       });
 
-    select(window).on('keyup.scola-pop', this._handleKeyUp.bind(this));
+    this._bind();
   }
 
   destroy() {
-    select(window).on('keyup.scola-pop', null);
+    this._unbind();
     this._children.forEach((child) => child.destroy());
 
     this._root.dispatch('destroy');
@@ -45,6 +45,14 @@ export default class Container {
     }
 
     return this;
+  }
+
+  _bind() {
+    select(window).on('keyup.scola-pop', this._handleKeyUp.bind(this));
+  }
+
+  _unbind() {
+    select(window).on('keyup.scola-pop', null);
   }
 
   _handleKeyUp() {

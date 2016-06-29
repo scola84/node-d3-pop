@@ -30,8 +30,7 @@ export default class PopOut {
         'position': 'fixed',
         'right': 0,
         'top': 0
-      })
-      .on('click.scola-popout', () => this.destroy());
+      });
 
     this._wrapper = this._root
       .append('div')
@@ -53,8 +52,7 @@ export default class PopOut {
         'position': 'absolute',
         'transform': 'scale(1)',
         'width': '100%'
-      })
-      .on('click.scola-popout', () => event.stopPropagation());
+      });
 
     this._triangle = this._wrapper
       .append('div')
@@ -73,18 +71,12 @@ export default class PopOut {
       .transition()
       .style('opacity', 1);
 
-    this._debouncer = debounce(this._rerender.bind(this), 250);
-    select(window).on('resize.scola-popout', this._debouncer);
-
     this._container.append(this);
+    this._bind();
   }
 
   destroy() {
-    select(window).on('resize.scola-popout', null);
-
-    this._root.on('click.scola-popout', null);
-    this._inner.on('click.scola-popout', null);
-
+    this._unbind();
     this._root
       .transition()
       .style('opacity', 0)
@@ -307,6 +299,19 @@ export default class PopOut {
     }
 
     return this;
+  }
+
+  _bind() {
+    select(window).on('resize.scola-pop-out',
+      debounce(this._rerender.bind(this), 250));
+    this._root.on('click.scola-pop-out', () => this.destroy());
+    this._inner.on('click.scola-pop-out', () => event.stopPropagation());
+  }
+
+  _unbind() {
+    select(window).on('resize.scola-pop-out', null);
+    this._root.on('click.scola-pop-out', null);
+    this._inner.on('click.scola-pop-out', null);
   }
 
   _leftInside() {

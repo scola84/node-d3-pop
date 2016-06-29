@@ -26,8 +26,7 @@ export default class PopOver {
         'position': 'fixed',
         'right': 0,
         'top': 0
-      })
-      .on('click.scola-popover', () => this.destroy());
+      });
 
     this._inner = this._root
       .append('div')
@@ -38,14 +37,13 @@ export default class PopOver {
         'overflow': 'hidden',
         'transform': 'scale(1)',
         'width': '100%'
-      })
-      .on('click.scola-popover', () => event.stopPropagation());
+      });
+
+    this._bind();
   }
 
   destroy() {
-    this._root.on('click.scola-popover', null);
-    this._inner.on('click.scola-popover', null);
-
+    this._unbind();
     this._hide(() => {
       if (this._media) {
         this._media.destroy();
@@ -120,6 +118,16 @@ export default class PopOver {
       .appendChild(this._slider.root().node());
 
     return this;
+  }
+
+  _bind() {
+    this._root.on('click.scola-pop-over', () => this.destroy());
+    this._inner.on('click.scola-pop-over', () => event.stopPropagation());
+  }
+
+  _unbind() {
+    this._root.on('click.scola-pop-over', null);
+    this._inner.on('click.scola-pop-over', null);
   }
 
   _show() {
