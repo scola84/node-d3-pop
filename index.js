@@ -1,4 +1,4 @@
-import Button from './src/button';
+import PopButton from './src/button';
 import Container from './src/container';
 import PopAction from './src/popaction';
 import PopOut from './src/popout';
@@ -7,11 +7,7 @@ import PopUp from './src/popup';
 
 let instance = null;
 
-export function button() {
-  return new Button();
-}
-
-export function container() {
+function container() {
   if (!instance) {
     instance = new Container();
   }
@@ -19,18 +15,22 @@ export function container() {
   return instance;
 }
 
-export function popaction(options) {
+export function popAction(options) {
   return new PopAction(container(), options);
 }
 
-export function popout(options) {
+export function popButton() {
+  return new PopButton();
+}
+
+export function popOut(options) {
   return new PopOut(container(), options);
 }
 
-export function popover(options) {
+export function popOver(options) {
   return new PopOver(container(), options);
 }
 
-export function popup() {
+export function popUp() {
   return new PopUp(container());
 }
