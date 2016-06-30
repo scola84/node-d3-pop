@@ -22,8 +22,7 @@ export default class PopUp {
         'position': 'fixed',
         'right': 0,
         'top': 0
-      })
-      .on('click.scola-popup', () => this.destroy());
+      });
 
     this._inner = this._root
       .append('div')
@@ -31,24 +30,20 @@ export default class PopUp {
       .styles({
         'background': '#FFF',
         'border-radius': '1em',
-        'display': 'flex',
-        'flex-direction': 'column',
         'overflow': 'hidden',
         'width': '17em'
-      })
-      .on('click.scola-popup', () => event.stopPropagation());
+      });
 
     this._root
       .transition()
       .style('opacity', 1);
 
     this._container.append(this);
+    this._bind();
   }
 
   destroy() {
-    this._root.on('click.scola-popup', null);
-    this._inner.on('click.scola-popup', null);
-
+    this._unbind();
     this._root
       .transition()
       .style('opacity', 0)
@@ -89,5 +84,15 @@ export default class PopUp {
     this._inner.node().appendChild(this._body.root().node());
 
     return this;
+  }
+
+  _bind() {
+    this._root.on('click.scola-popup', () => this.destroy());
+    this._inner.on('click.scola-popup', () => event.stopPropagation());
+  }
+
+  _unbind() {
+    this._root.on('click.scola-popup', null);
+    this._inner.on('click.scola-popup', null);
   }
 }
