@@ -6,7 +6,6 @@ export default class Container {
 
     this._root = select('body')
       .append('div')
-      .remove()
       .classed('scola pop', true)
       .styles({
         'display': 'none',

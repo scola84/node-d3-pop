@@ -31,7 +31,7 @@ export default class PopButton {
   }
 
   left() {
-    this._root.style('border-left-style', 'none');
+    this._root.style('border-left-color', '#FFF');
     return this;
   }
 
@@ -41,7 +41,7 @@ export default class PopButton {
   }
 
   top() {
-    this._root.style('border-top-style', 'none');
+    this._root.style('border-top-color', '#FFF');
     return this;
   }
 }

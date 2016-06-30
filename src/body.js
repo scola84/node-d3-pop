@@ -3,6 +3,8 @@ import { select } from 'd3-selection';
 export default class Body {
   constructor() {
     this._direction = null;
+    this._title = null;
+    this._text = null;
 
     this._root = select('body')
       .append('div')
@@ -15,30 +17,12 @@ export default class Body {
         'width': '100%'
       });
 
-    this._title = this._root
-      .append('div')
-      .classed('scola title', true)
-      .styles({
-        'display': 'none',
-        'font-weight': 'bold',
-        'line-height': '1.5em',
-        'padding': '1em'
-      });
-
-    this._text = this._root
-      .append('div')
-      .classed('scola text', true)
-      .styles({
-        'display': 'none',
-        'line-height': '1.5em',
-        'padding': '1em'
-      });
-
     this._buttons = this._root
       .append('div')
       .classed('scola buttons', true)
       .styles({
-        'display': 'flex'
+        'display': 'flex',
+        'order': 3
       });
   }
 
@@ -79,11 +63,24 @@ export default class Body {
       return this._text;
     }
 
-    this._text
-      .style('display', 'inline')
+    if (text === false) {
+      this._text.remove();
+      this._text = null;
+
+      return this;
+    }
+
+    this._text = this._root
+      .append('div')
+      .classed('scola text', true)
+      .styles({
+        'line-height': '1.5em',
+        'order': 2,
+        'padding': '1em'
+      })
       .text(text);
 
-    if (this._title.style('display') !== 'none') {
+    if (this._title) {
       this._text.style('padding-top', 0);
       this._title.style('padding-bottom', '0.5em');
     }
@@ -96,8 +93,22 @@ export default class Body {
       return this._title;
     }
 
-    this._title
-      .style('display', 'inline')
+    if (text === false) {
+      this._title.remove();
+      this._title = null;
+
+      return this;
+    }
+
+    this._title = this._root
+      .append('div')
+      .classed('scola title', true)
+      .styles({
+        'font-weight': 'bold',
+        'line-height': '1.5em',
+        'order': 1,
+        'padding': '1em'
+      })
       .text(text);
 
     return this;
