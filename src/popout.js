@@ -302,9 +302,9 @@ export default class PopOut {
     return this;
   }
 
-  _bind() {
+  _bind(delay = 25) {
     select(window).on('resize.scola-pop-out',
-      debounce(this._rerender.bind(this), 250));
+      debounce(this._rerender.bind(this), delay));
     this._root.on('click.scola-pop-out', () => this.destroy());
     this._inner.on('click.scola-pop-out', () => event.stopPropagation());
   }
