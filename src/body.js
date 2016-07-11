@@ -38,23 +38,17 @@ export default class Body {
 
   append(button, action = true) {
     if (action === true) {
-      if (this._direction === 'column' ||
-        this._buttons.select('button').size() === 0) {
-
-        button.left();
-      }
-
-      if (this._direction === 'column' &&
-        this._buttons.select('button').size() === 0) {
-
-        button.top();
-      }
-
       this._buttons.node().appendChild(button.root().node());
     } else if (action === false) {
       button.root().remove();
     }
 
+    if (this._direction === 'column') {
+      this._buttons.style('height',
+        ((this._buttons.select('button').size() + 1) * 3) + 'em');
+    }
+
+    button.direction(this._direction);
     return this;
   }
 
@@ -118,8 +112,10 @@ export default class Body {
     this._direction = direction;
 
     this._buttons.style('flex-direction', direction);
-    this._buttons.style('height', direction === 'row' ?
-      '3em' : 'initial');
+
+    if (this._direction === 'row') {
+      this._buttons.style('height', '3em');
+    }
 
     return this;
   }
