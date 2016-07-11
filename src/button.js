@@ -6,7 +6,7 @@ export default class PopButton {
     this._first = false;
 
     this._root = select('body')
-      .append('button')
+      .append('div')
       .remove()
       .classed('scola button', true)
       .styles({
@@ -28,7 +28,7 @@ export default class PopButton {
       .styles({
         'background': '#CCC',
         'display': 'none',
-        'height': 'inherit',
+        'height': '100%',
         'order': 1,
         'width': '1px'
       });

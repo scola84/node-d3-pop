@@ -45,7 +45,7 @@ export default class Body {
 
     if (this._direction === 'column') {
       this._buttons.style('height',
-        ((this._buttons.select('button').size() + 1) * 3) + 'em');
+        ((this._buttons.select('div.button').size() + 1) * 3) + 'em');
     }
 
     button.direction(this._direction);
