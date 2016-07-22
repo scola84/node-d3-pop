@@ -49,7 +49,7 @@ export default class Container {
   }
 
   _bind() {
-    select(window).on('keyup.scola-pop', this._handleKeyUp.bind(this));
+    select(window).on('keyup.scola-pop', () => this._handleKeyUp());
   }
 
   _unbind() {
