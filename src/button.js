@@ -2,7 +2,7 @@ import { select } from 'd3-selection';
 
 export default class PopButton {
   constructor() {
-    this._direction = null;
+    this._direction = 'row';
     this._first = false;
 
     this._root = select('body')
@@ -10,15 +10,12 @@ export default class PopButton {
       .remove()
       .classed('scola button', true)
       .styles({
-        'background': '#FFF',
-        'border': 0,
-        'border-top': '1px solid #CCC',
+        'border-top': '1px solid',
         'cursor': 'pointer',
         'display': 'flex',
         'flex': 1,
         'height': '3em',
         'line-height': '3em',
-        'padding': 0,
         'text-align': 'center'
       });
 
@@ -27,7 +24,6 @@ export default class PopButton {
       .classed('scola border', true)
       .styles({
         'background': '#CCC',
-        'display': 'none',
         'height': '100%',
         'order': 1,
         'width': '1px'
@@ -40,6 +36,8 @@ export default class PopButton {
         'flex': 1,
         'order': 2
       });
+
+    this._style();
   }
 
   destroy() {
@@ -63,22 +61,18 @@ export default class PopButton {
 
   direction(direction) {
     this._direction = direction;
-    this._style();
-
-    return this;
+    return this._style();
   }
 
-  first(first = true) {
+  first(first) {
     this._first = first;
-    this._style();
-
-    return this;
+    return this._style();
   }
 
   _style() {
     if (this._first === true) {
       if (this._direction === 'column') {
-        this._root.style('border-top-color', '#FFF');
+        this._root.style('border-top-color', 'transparent');
       } else if (this._direction === 'row') {
         this._border.style('display', 'none');
       }
@@ -89,5 +83,7 @@ export default class PopButton {
         this._border.style('display', 'inline-flex');
       }
     }
+
+    return this;
   }
 }

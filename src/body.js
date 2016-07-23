@@ -36,7 +36,7 @@ export default class Body {
     return this._root;
   }
 
-  append(button, action = true) {
+  append(button, action) {
     if (action === true) {
       this._buttons.node().appendChild(button.root().node());
     } else if (action === false) {
