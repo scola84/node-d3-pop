@@ -40,6 +40,7 @@ export default class PopOver {
         'width': '100%'
       });
 
+    this._container.append(this, true);
     this._bind();
   }
 

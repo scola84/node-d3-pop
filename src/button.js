@@ -70,16 +70,20 @@ export default class PopButton {
   }
 
   _style() {
-    if (this._first === true) {
-      if (this._direction === 'column') {
+    if (this._direction === 'column') {
+      this._border.style('display', 'none');
+
+      if (this._first) {
         this._root.style('border-top-color', 'transparent');
-      } else if (this._direction === 'row') {
-        this._border.style('display', 'none');
-      }
-    } else if (this._first === false) {
-      if (this._direction === 'column') {
+      } else {
         this._root.style('border-top-color', '#CCC');
-      } else if (this._direction === 'row') {
+      }
+    } else if (this._direction === 'row') {
+      this._root.style('border-top-color', '#CCC');
+
+      if (this._first) {
+        this._border.style('display', 'none');
+      } else {
         this._border.style('display', 'inline-flex');
       }
     }

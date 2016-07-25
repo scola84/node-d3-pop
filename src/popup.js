@@ -38,7 +38,7 @@ export default class PopUp {
       .transition()
       .style('opacity', 1);
 
-    this._container.append(this);
+    this._container.append(this, true);
     this._bind();
   }
 
