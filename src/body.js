@@ -58,12 +58,45 @@ export default class Body {
     }
 
     if (text === false) {
-      this._text.remove();
-      this._text = null;
-
-      return this;
+      return this._deleteText();
     }
 
+    if (this._text) {
+      return this._updateText(text);
+    }
+
+    return this._insertText(text);
+  }
+
+  title(title) {
+    if (typeof title === 'undefined') {
+      return this._title;
+    }
+
+    if (title === false) {
+      return this._deleteTitle();
+    }
+
+    if (this._title) {
+      return this._updateTitle(title);
+    }
+
+    return this._insertTitle(title);
+  }
+
+  direction(direction) {
+    this._direction = direction;
+
+    this._buttons.style('flex-direction', direction);
+
+    if (this._direction === 'row') {
+      this._buttons.style('height', '3em');
+    }
+
+    return this;
+  }
+
+  _insertText(text) {
     this._text = this._root
       .append('div')
       .classed('scola text', true)
@@ -82,18 +115,25 @@ export default class Body {
     return this;
   }
 
-  title(text) {
-    if (typeof text === 'undefined') {
-      return this._title;
+  _updateText(text) {
+    this._text.text(text);
+    return this;
+  }
+
+  _deleteText() {
+    if (this._text) {
+      this._text.remove();
+      this._text = null;
     }
 
-    if (text === false) {
-      this._title.remove();
-      this._title = null;
-
-      return this;
+    if (this._title) {
+      this._title.style('padding-bottom', '1em');
     }
 
+    return this;
+  }
+
+  _insertTitle(title) {
     this._title = this._root
       .append('div')
       .classed('scola title', true)
@@ -103,18 +143,20 @@ export default class Body {
         'order': 1,
         'padding': '1em'
       })
-      .text(text);
+      .text(title);
 
     return this;
   }
 
-  direction(direction) {
-    this._direction = direction;
+  _updateTitle(title) {
+    this._title.text(title);
+    return this;
+  }
 
-    this._buttons.style('flex-direction', direction);
-
-    if (this._direction === 'row') {
-      this._buttons.style('height', '3em');
+  _deleteTitle() {
+    if (this._title) {
+      this._title.remove();
+      this._title = null;
     }
 
     return this;
