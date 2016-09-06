@@ -58,7 +58,7 @@ export default class Container {
 
   _handleKeyUp() {
     if (event.keyCode === 27 && this._children.size > 0) {
-      [...this._children].pop().destroy();
+      Array.from(this._children).pop().destroy();
     }
   }
 

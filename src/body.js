@@ -52,42 +52,42 @@ export default class Body {
     return this;
   }
 
-  text(text) {
-    if (typeof text === 'undefined') {
+  text(value) {
+    if (typeof value === 'undefined') {
       return this._text;
     }
 
-    if (text === false) {
+    if (value === false) {
       return this._deleteText();
     }
 
     if (this._text) {
-      return this._updateText(text);
+      return this._updateText(value);
     }
 
-    return this._insertText(text);
+    return this._insertText(value);
   }
 
-  title(title) {
-    if (typeof title === 'undefined') {
+  title(value) {
+    if (typeof value === 'undefined') {
       return this._title;
     }
 
-    if (title === false) {
+    if (value === false) {
       return this._deleteTitle();
     }
 
     if (this._title) {
-      return this._updateTitle(title);
+      return this._updateTitle(value);
     }
 
-    return this._insertTitle(title);
+    return this._insertTitle(value);
   }
 
-  direction(direction) {
-    this._direction = direction;
+  direction(value) {
+    this._direction = value;
 
-    this._buttons.style('flex-direction', direction);
+    this._buttons.style('flex-direction', value);
 
     if (this._direction === 'row') {
       this._buttons.style('height', '3em');
