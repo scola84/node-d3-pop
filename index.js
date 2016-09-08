@@ -1,3 +1,5 @@
+import '@scola/d3-media';
+
 import PopButton from './src/button';
 import Container from './src/container';
 import PopAction from './src/popaction';
