@@ -8,6 +8,8 @@
   "main": "./dist/d3-pop.js",
   "jsnext:main": "index.js",
   "dependencies": {
+    "@scola/d3-slider": "^1.0.0",
+    "d3-selection": "^1.0.2",
     "lodash-es": "^4.15.0"
   },
   "devDependencies": {
