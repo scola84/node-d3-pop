@@ -108,7 +108,7 @@ export default class Body {
       .text(text);
 
     if (this._title) {
-      this._text.style('padding-top', 0);
+      this._text.style('padding-top', '0px');
       this._title.style('padding-bottom', '0.5em');
     }
 

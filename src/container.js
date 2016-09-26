@@ -9,11 +9,11 @@ export default class Container {
       .classed('scola pop', true)
       .styles({
         'display': 'none',
-        'bottom': 0,
-        'left': 0,
+        'bottom': '0px',
+        'left': '0px',
         'position': 'fixed',
-        'right': 0,
-        'top': 0,
+        'right': '0px',
+        'top': '0px',
         'z-index': 1000
       });
 

@@ -19,14 +19,14 @@ export default class PopOver {
       .styles({
         'align-items': 'center',
         'background': 'rgba(0, 0, 0, 0.5)',
-        'bottom': 0,
+        'bottom': '0px',
         'display': 'flex',
         'justify-content': 'center',
-        'left': 0,
+        'left': '0px',
         'opacity': 0,
         'position': 'fixed',
-        'right': 0,
-        'top': 0
+        'right': '0px',
+        'top': '0px'
       });
 
     this._inner = this._root
@@ -146,12 +146,12 @@ export default class PopOver {
 
     this._inner.styles({
       position: 'absolute',
-      top: bodyHeight,
-      left: (bodyWidth - innerWidth) / 2
+      top: bodyHeight + 'px',
+      left: ((bodyWidth - innerWidth) / 2) + 'px'
     });
 
     this._inner.transition()
-      .style('top', (bodyHeight - innerHeight) / 2 + 'px')
+      .style('top', ((bodyHeight - innerHeight) / 2) + 'px')
       .on('end', () => {
         this._inner.styles({
           'position': 'relative',
@@ -171,8 +171,8 @@ export default class PopOver {
 
     this._inner.styles({
       position: 'absolute',
-      top: (bodyHeight - innerHeight) / 2,
-      left: (bodyWidth - innerWidth) / 2
+      top: ((bodyHeight - innerHeight) / 2) + 'px',
+      left: ((bodyWidth - innerWidth) / 2) + 'px'
     });
 
     this._inner

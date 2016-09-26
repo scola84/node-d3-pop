@@ -25,12 +25,12 @@ export default class PopOut {
       .classed('scola popout', true)
       .styles({
         'background': 'rgba(0, 0, 0, 0.5)',
-        'bottom': 0,
-        'left': 0,
+        'bottom': '0px',
+        'left': '0px',
         'opacity': 0,
         'position': 'fixed',
-        'right': 0,
-        'top': 0
+        'right': '0px',
+        'top': '0px'
       });
 
     this._wrapper = this._root
@@ -62,9 +62,9 @@ export default class PopOut {
         'border-color': 'transparent',
         'border-style': 'solid',
         'border-width': '0.75em',
-        'height': 0,
+        'height': '0px',
         'position': 'absolute',
-        'width': 0,
+        'width': '0px',
         'z-index': 2
       });
 
@@ -317,7 +317,7 @@ export default class PopOut {
 
   _leftInside() {
     const position = this._getPosition(this._insideElement);
-    this._wrapper.style('left', position.x + (this._fontSize / 2));
+    this._wrapper.style('left', (position.x + (this._fontSize / 2)) + 'px');
 
     return this;
   }
@@ -327,9 +327,9 @@ export default class PopOut {
     const dimensions = this._getDimensions(this._anchorElement);
 
     if (this._positions.length === 2) {
-      this._wrapper.style('left', position.x);
+      this._wrapper.style('left', (position.x) + 'px');
     } else if (this._positions.length === 1) {
-      this._wrapper.style('left', position.x + dimensions.width);
+      this._wrapper.style('left', (position.x + dimensions.width) + 'px');
     }
 
     return this;
@@ -342,16 +342,16 @@ export default class PopOut {
 
     this._triangle.styles({
       'margin-left': '-0.75em',
-      'left': anchorPosition.x +
+      'left': (anchorPosition.x +
         (anchorDimensions.width / 2) -
-        innerPosition.x
+        innerPosition.x) + 'px'
     });
   }
 
   _leftTriangleVertical() {
     this._triangle.styles({
       'border-right-color': '#FAFAFA',
-      'border-left-width': 0,
+      'border-left-width': '0px',
       'margin-left': '-0.75em'
     });
 
@@ -364,10 +364,10 @@ export default class PopOut {
     const innerDimensions = this._getDimensions(this._wrapper);
 
     this._wrapper.styles({
-      'left': insidePosition.x +
+      'left': (insidePosition.x +
         insideDimensions.width -
         innerDimensions.width -
-        (this._fontSize / 2)
+        (this._fontSize / 2)) + 'px'
     });
 
     return this;
@@ -379,12 +379,12 @@ export default class PopOut {
     const innerDimensions = this._getDimensions(this._wrapper);
 
     if (this._positions.length === 2) {
-      this._wrapper.style('left', anchorPosition.x +
+      this._wrapper.style('left', (anchorPosition.x +
         anchorDimensions.width -
-        innerDimensions.width);
+        innerDimensions.width) + 'px');
     } else if (this._positions.length === 1) {
-      this._wrapper.style('left', anchorPosition.x -
-        innerDimensions.width);
+      this._wrapper.style('left', (anchorPosition.x -
+        innerDimensions.width) + 'px');
     }
 
     return this;
@@ -397,18 +397,18 @@ export default class PopOut {
 
     this._triangle.styles({
       'margin-left': '-0.75em',
-      'left': anchorPosition.x +
+      'left': (anchorPosition.x +
         (anchorDimensions.width / 2) -
-        innerPosition.x
+        innerPosition.x) + 'px'
     });
   }
 
   _rightTriangleVertical() {
     this._triangle.styles({
       'border-left-color': '#FAFAFA',
-      'border-right-width': 0,
+      'border-right-width': '0px',
       'margin-right': '-0.75em',
-      'right': 0
+      'right': '0px'
     });
 
     this._wrapper.style('margin-left', '-1em');
@@ -420,9 +420,9 @@ export default class PopOut {
     const innerDimensions = this._getDimensions(this._wrapper);
 
     this._wrapper.styles({
-      'left': insidePosition.x +
+      'left': (insidePosition.x +
         (insideDimensions.width / 2) -
-        (innerDimensions.width / 2)
+        (innerDimensions.width / 2)) + 'px'
     });
 
     return this;
@@ -434,9 +434,9 @@ export default class PopOut {
     const innerDimensions = this._getDimensions(this._wrapper);
 
     this._wrapper.styles({
-      'left': anchorPosition.x +
+      'left': (anchorPosition.x +
         (anchorDimensions.width / 2) -
-        (innerDimensions.width / 2)
+        (innerDimensions.width / 2)) + 'px'
     });
 
     return this;
@@ -447,13 +447,13 @@ export default class PopOut {
 
     this._triangle.styles({
       'margin-left': '-0.75em',
-      'left': innerDimensions.width / 2
+      'left': (innerDimensions.width / 2) + 'px'
     });
   }
 
   _topInside() {
     const position = this._getPosition(this._insideElement);
-    this._wrapper.style('top', position.y - (this._fontSize / 2));
+    this._wrapper.style('top', (position.y - (this._fontSize / 2)) + 'px');
 
     return this;
   }
@@ -463,9 +463,9 @@ export default class PopOut {
     const dimensions = this._getDimensions(this._anchorElement);
 
     if (this._positions.length === 2) {
-      this._wrapper.style('top', position.y);
+      this._wrapper.style('top', (position.y) + 'px');
     } else if (this._positions.length === 1) {
-      this._wrapper.style('top', position.y + dimensions.height);
+      this._wrapper.style('top', (position.y + dimensions.height) + 'px');
     }
 
     return this;
@@ -474,7 +474,7 @@ export default class PopOut {
   _topTriangleHorizontal() {
     this._triangle.styles({
       'border-bottom-color': '#FAFAFA',
-      'border-top-width': 0,
+      'border-top-width': '0px',
       'margin-top': '-0.75em'
     });
 
@@ -488,9 +488,9 @@ export default class PopOut {
 
     this._triangle.styles({
       'margin-top': '-0.75em',
-      'top': anchorPosition.y +
+      'top': (anchorPosition.y +
         (anchorDimensions.height / 2) -
-        innerPosition.y
+        innerPosition.y) + 'px'
     });
   }
 
@@ -499,11 +499,10 @@ export default class PopOut {
     const insideDimensions = this._getDimensions(this._insideElement);
     const innerDimensions = this._getDimensions(this._wrapper);
 
-    this._wrapper.style('top', insidePosition.y +
+    this._wrapper.style('top', (insidePosition.y +
       insideDimensions.height -
       innerDimensions.height +
-      (this._fontSize / 2)
-    );
+      (this._fontSize / 2)) + 'px');
 
     return this;
   }
@@ -514,12 +513,12 @@ export default class PopOut {
     const innerDimensions = this._getDimensions(this._wrapper);
 
     if (this._positions.length === 2) {
-      this._wrapper.style('top', anchorPosition.y +
+      this._wrapper.style('top', (anchorPosition.y +
         anchorDimensions.height -
-        innerDimensions.height);
+        innerDimensions.height) + 'px');
     } else if (this._positions.length === 1) {
-      this._wrapper.style('top', anchorPosition.y -
-        innerDimensions.height);
+      this._wrapper.style('top', (anchorPosition.y -
+        innerDimensions.height) + 'px');
     }
 
     return this;
@@ -528,8 +527,8 @@ export default class PopOut {
   _bottomTriangleHorizontal() {
     this._triangle.styles({
       'border-top-color': '#FAFAFA',
-      'border-bottom-width': 0,
-      'bottom': 0,
+      'border-bottom-width': '0px',
+      'bottom': '0px',
       'margin-bottom': '-0.75em'
     });
 
@@ -543,9 +542,9 @@ export default class PopOut {
 
     this._triangle.styles({
       'margin-top': '-0.75em',
-      'top': anchorPosition.y +
+      'top': (anchorPosition.y +
         (anchorDimensions.height / 2) -
-        innerPosition.y
+        innerPosition.y) + 'px'
     });
   }
 
@@ -554,10 +553,9 @@ export default class PopOut {
     const insideDimensions = this._getDimensions(this._insideElement);
     const innerDimensions = this._getDimensions(this._wrapper);
 
-    this._wrapper.style('top', insidePosition.y +
+    this._wrapper.style('top', (insidePosition.y +
       (insideDimensions.height / 2) -
-      (innerDimensions.height / 2)
-    );
+      (innerDimensions.height / 2)) + 'px');
 
     return this;
   }
@@ -567,10 +565,9 @@ export default class PopOut {
     const anchorDimensions = this._getDimensions(this._anchorElement);
     const innerDimensions = this._getDimensions(this._wrapper);
 
-    this._wrapper.style('top', anchorPosition.y +
+    this._wrapper.style('top', (anchorPosition.y +
       (anchorDimensions.height / 2) -
-      (innerDimensions.height / 2)
-    );
+      (innerDimensions.height / 2)) + 'px');
 
     return this;
   }
@@ -580,7 +577,7 @@ export default class PopOut {
 
     this._triangle.styles({
       'margin-top': '-0.75em',
-      'top': innerDimensions.height / 2
+      'top': (innerDimensions.height / 2) + 'px'
     });
   }
 
@@ -593,7 +590,7 @@ export default class PopOut {
 
     if (fullScreen) {
       this._wrapper.styles({
-        'left': 0,
+        'left': '0px',
         'margin-left': null,
         'margin-top': null,
         'top': null
