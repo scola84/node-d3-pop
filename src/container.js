@@ -1,4 +1,5 @@
 import { event, select } from 'd3-selection';
+import 'd3-selection-multi';
 
 export default class Container {
   constructor() {

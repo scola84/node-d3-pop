@@ -1,5 +1,7 @@
 import { event, select } from 'd3-selection';
 import Body from './body';
+import 'd3-selection-multi';
+import 'd3-transition';
 
 export default class PopUp {
   constructor(container) {

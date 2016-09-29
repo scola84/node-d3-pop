@@ -1,5 +1,7 @@
 import { event, select } from 'd3-selection';
 import { slider } from '@scola/d3-slider';
+import 'd3-selection-multi';
+import 'd3-transition';
 
 export default class PopOver {
   constructor(container) {

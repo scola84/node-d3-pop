@@ -1,5 +1,6 @@
 import Body from './body';
 import PopOut from './popout';
+import 'd3-selection-multi';
 
 export default class PopAction extends PopOut {
   constructor(container) {
