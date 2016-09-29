@@ -8,8 +8,11 @@
   "main": "./dist/d3-pop.js",
   "jsnext:main": "index.js",
   "dependencies": {
+    "@scola/d3-media": "^1.0.0",
     "@scola/d3-slider": "^1.0.0",
     "d3-selection": "^1.0.2",
+    "d3-selection-multi": "^1.0.0",
+    "d3-transition": "^1.0.2",
     "lodash-es": "^4.15.0"
   },
   "devDependencies": {
@@ -20,7 +23,11 @@
     "uglify-js": "^2.7.3"
   },
   "scripts": {
-    "build": "rollup -c -n d3 -o dist/d3-pop.js",
-    "build:min": "uglifyjs dist/d3-pop.js -c -m -o dist/d3-pop.min.js"
+    "build": "npm run cleanup && npm run rollup",
+    "build:min": "npm run build && npm run min",
+    "cleanup": "rm -rf dist",
+    "min": "npm run min:js && gzip -9 -k dist/*",
+    "min:js": "uglifyjs dist/d3-pop.js -m -o dist/d3-pop.min.js",
+    "rollup": "rollup -c -n d3 -o dist/d3-pop.js"
   }
 }

@@ -5,6 +5,7 @@ import { slider } from '@scola/d3-slider';
 import debounce from 'lodash-es/debounce.js';
 import 'd3-selection-multi';
 import 'd3-transition';
+import '@scola/d3-media';
 
 export default class PopOut {
   constructor(container) {

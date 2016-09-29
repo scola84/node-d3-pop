@@ -6,16 +6,18 @@ export default {
   entry: 'index.js',
   format: 'umd',
   globals: {
+    '@scola/d3-media': 'd3',
+    '@scola/d3-slider': 'd3',
     'd3-selection': 'd3',
-    '@scola/d3-slider': 'd3'
+    'd3-selection-multi': 'd3',
+    'd3-transition': 'd3'
   },
   plugins: [
     resolve({
-      jsnext: true,
-      skip: ['d3-selection', '@scola/d3-slider']
+      jsnext: true
     }),
     commonjs({
-      exclude: ['**/node_modules/lodash-es/**']
+      exclude: ['**/lodash-es/**']
     }),
     buble()
   ]
