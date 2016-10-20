@@ -8,6 +8,10 @@ export default class PopOver {
   constructor(container) {
     this._container = container;
 
+    this._fade = true;
+    this._lock = true;
+    this._move = true;
+
     this._width = null;
     this._height = null;
     this._styles = null;
@@ -73,6 +77,21 @@ export default class PopOver {
     return this._root;
   }
 
+  fade(value) {
+    this._fade = value;
+    return this;
+  }
+
+  lock(value) {
+    this._lock = value;
+    return this;
+  }
+
+  move(value) {
+    this._move = value;
+    return this;
+  }
+
   media(width = '34em', height = '39em', styles = {}) {
     if (width === null) {
       return this._media;
@@ -126,8 +145,20 @@ export default class PopOver {
   }
 
   _bind() {
-    this._root.on('click.scola-pop-over', () => this.destroy());
-    this._inner.on('click.scola-pop-over', () => event.stopPropagation());
+    this._root.on('click.scola-pop-over', () => this._handleClickRoot());
+    this._inner.on('click.scola-pop-over', () => this._handleClickInner());
+  }
+
+  _handleClickRoot() {
+    if (this._lock) {
+      return;
+    }
+
+    this.destroy();
+  }
+
+  _handleClickInner() {
+    event.stopPropagation();
   }
 
   _unbind() {
@@ -136,10 +167,22 @@ export default class PopOver {
   }
 
   _show() {
+    if (this._fade) {
+      this._showFade();
+    }
+
+    if (this._move) {
+      this._showMove();
+    }
+  }
+
+  _showFade() {
     this._root
       .transition()
       .style('opacity', 1);
+  }
 
+  _showMove() {
     const {
       bodyHeight,
       bodyWidth,
@@ -165,6 +208,25 @@ export default class PopOver {
   }
 
   _hide(callback) {
+    if (this._fade) {
+      this._hideFade(callback);
+    } else {
+      callback();
+    }
+
+    if (this._move) {
+      this._hideMove();
+    }
+  }
+
+  _hideFade(callback) {
+    this._root
+      .transition()
+      .style('opacity', 0)
+      .on('end', callback);
+  }
+
+  _hideMove() {
     const {
       bodyHeight,
       bodyWidth,
@@ -181,11 +243,6 @@ export default class PopOver {
     this._inner
       .transition()
       .style('top', bodyHeight + 'px');
-
-    this._root
-      .transition()
-      .style('opacity', 0)
-      .on('end', callback);
   }
 
   _dimensions() {
