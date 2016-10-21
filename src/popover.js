@@ -51,8 +51,13 @@ export default class PopOver {
     this._bind();
   }
 
-  destroy() {
+  destroy(click) {
+    if (click === true && this._lock === true) {
+      return;
+    }
+
     this._unbind();
+
     this._hide(() => {
       if (this._media) {
         this._media.destroy();
@@ -145,20 +150,8 @@ export default class PopOver {
   }
 
   _bind() {
-    this._root.on('click.scola-pop-over', () => this._handleClickRoot());
-    this._inner.on('click.scola-pop-over', () => this._handleClickInner());
-  }
-
-  _handleClickRoot() {
-    if (this._lock) {
-      return;
-    }
-
-    this.destroy();
-  }
-
-  _handleClickInner() {
-    event.stopPropagation();
+    this._root.on('click.scola-pop-over', () => this.destroy(true));
+    this._inner.on('click.scola-pop-over', () => event.stopPropagation());
   }
 
   _unbind() {

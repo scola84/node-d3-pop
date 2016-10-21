@@ -15,6 +15,7 @@ export default class PopOut {
     this._isFullScreen = null;
     this._positions = [];
 
+    this._lock = false;
     this._width = null;
     this._height = null;
     this._styles = null;
@@ -79,8 +80,13 @@ export default class PopOut {
     this._bind();
   }
 
-  destroy() {
+  destroy(click) {
+    if (click === true && this._lock === true) {
+      return;
+    }
+
     this._unbind();
+
     this._root
       .transition()
       .style('opacity', 0)
@@ -110,6 +116,11 @@ export default class PopOut {
 
   root() {
     return this._root;
+  }
+
+  lock(value) {
+    this._lock = value;
+    return this;
   }
 
   media(width = '21.333em', height = '21.333em', styles = {}) {
@@ -308,7 +319,7 @@ export default class PopOut {
   _bind(delay = 25) {
     select(window).on('resize.scola-pop-out',
       debounce(() => this._rerender(), delay));
-    this._root.on('click.scola-pop-out', () => this.destroy());
+    this._root.on('click.scola-pop-out', () => this.destroy(true));
     this._inner.on('click.scola-pop-out', () => event.stopPropagation());
   }
 

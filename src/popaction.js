@@ -17,7 +17,11 @@ export default class PopAction extends PopOut {
     });
   }
 
-  destroy() {
+  destroy(click) {
+    if (click === true && this._lock === true) {
+      return;
+    }
+
     if (this._body) {
       this._body.destroy();
       this._body = null;
@@ -28,7 +32,7 @@ export default class PopAction extends PopOut {
       this._mediaInner = null;
     }
 
-    super.destroy();
+    super.destroy(click);
   }
 
   body(action) {

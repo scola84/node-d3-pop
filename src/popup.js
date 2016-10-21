@@ -8,6 +8,7 @@ export default class PopUp {
   constructor(container) {
     this._container = container;
 
+    this._lock = false;
     this._body = null;
 
     this._root = select('body')
@@ -45,8 +46,13 @@ export default class PopUp {
     this._bind();
   }
 
-  destroy() {
+  destroy(click) {
+    if (click === true && this._lock === true) {
+      return;
+    }
+
     this._unbind();
+
     this._root
       .transition()
       .style('opacity', 0)
@@ -67,6 +73,11 @@ export default class PopUp {
 
   root() {
     return this._root;
+  }
+
+  lock(value) {
+    this._lock = value;
+    return this;
   }
 
   body(action) {
@@ -90,12 +101,12 @@ export default class PopUp {
   }
 
   _bind() {
-    this._root.on('click.scola-popup', () => this.destroy());
-    this._inner.on('click.scola-popup', () => event.stopPropagation());
+    this._root.on('click.scola-pop-up', () => this.destroy(true));
+    this._inner.on('click.scola-pop-up', () => event.stopPropagation());
   }
 
   _unbind() {
-    this._root.on('click.scola-popup', null);
-    this._inner.on('click.scola-popup', null);
+    this._root.on('click.scola-pop-up', null);
+    this._inner.on('click.scola-pop-up', null);
   }
 }
