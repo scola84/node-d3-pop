@@ -9,18 +9,18 @@
   "jsnext:main": "index.js",
   "dependencies": {
     "@scola/d3-media": "^1.0.2",
-    "@scola/d3-slider": "^1.0.3",
+    "@scola/d3-slider": "^1.1.0",
     "d3-selection": "^1.0.2",
     "d3-selection-multi": "^1.0.0",
-    "d3-transition": "^1.0.2",
-    "lodash-es": "^4.16.2"
+    "d3-transition": "^1.0.3",
+    "lodash-es": "^4.17.2"
   },
   "devDependencies": {
-    "rollup": "^0.36.1",
+    "rollup": "^0.36.3",
     "rollup-plugin-buble": "^0.14.0",
-    "rollup-plugin-commonjs": "^5.0.4",
+    "rollup-plugin-commonjs": "^5.0.5",
     "rollup-plugin-node-resolve": "^2.0.0",
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^2.7.4"
   },
   "scripts": {
     "build": "npm run cleanup && npm run rollup",
