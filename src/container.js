@@ -23,7 +23,7 @@ export default class Container {
 
   destroy() {
     this._unbind();
-    this._children.forEach((child) => child.destroy());
+    this._children.forEach((child) => child.hide());
     this._children.clear();
 
     this._root.dispatch('destroy');
@@ -59,7 +59,7 @@ export default class Container {
 
   _handleKeyUp() {
     if (event.keyCode === 27 && this._children.size > 0) {
-      Array.from(this._children).pop().destroy(true);
+      Array.from(this._children).pop().hide(true);
     }
   }
 

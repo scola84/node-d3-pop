@@ -51,31 +51,25 @@ export default class PopOver {
     this._bind();
   }
 
-  destroy(click) {
-    if (click === true && this._lock === true) {
-      return;
-    }
-
+  destroy() {
     this._unbind();
 
-    this._hide(() => {
-      if (this._media) {
-        this._media.destroy();
-        this._media = null;
-      }
+    if (this._media) {
+      this._media.destroy();
+      this._media = null;
+    }
 
-      if (this._slider) {
-        this._slider.destroy();
-        this._slider = null;
-      }
+    if (this._slider) {
+      this._slider.destroy();
+      this._slider = null;
+    }
 
-      this._container.append(this, false);
-      this._container = null;
+    this._container.append(this, false);
+    this._container = null;
 
-      this._root.dispatch('destroy');
-      this._root.remove();
-      this._root = null;
-    });
+    this._root.dispatch('destroy');
+    this._root.remove();
+    this._root = null;
   }
 
   root() {
@@ -122,7 +116,7 @@ export default class PopOver {
       .styles(this._styles)
       .start();
 
-    this._show();
+    this.show();
 
     return this;
   }
@@ -149,17 +143,7 @@ export default class PopOver {
     return this;
   }
 
-  _bind() {
-    this._root.on('click.scola-pop-over', () => this.destroy(true));
-    this._inner.on('click.scola-pop-over', () => event.stopPropagation());
-  }
-
-  _unbind() {
-    this._root.on('click.scola-pop-over', null);
-    this._inner.on('click.scola-pop-over', null);
-  }
-
-  _show() {
+  show() {
     if (this._fade) {
       this._showFade();
     }
@@ -169,10 +153,37 @@ export default class PopOver {
     }
   }
 
+  hide(click) {
+    if (click === true && this._lock === true) {
+      return;
+    }
+
+    if (this._fade) {
+      this._hideFade();
+    }
+
+    if (this._move) {
+      this._hideMove();
+    }
+  }
+
+  _bind() {
+    this._root.on('click.scola-pop-over', () => this.hide(true));
+    this._inner.on('click.scola-pop-over', () => event.stopPropagation());
+  }
+
+  _unbind() {
+    this._root.on('click.scola-pop-over', null);
+    this._inner.on('click.scola-pop-over', null);
+  }
+
   _showFade() {
     this._root
       .transition()
-      .style('opacity', 1);
+      .style('opacity', 1)
+      .on('end', () => {
+        this._root.dispatch('fadein');
+      });
   }
 
   _showMove() {
@@ -197,26 +208,18 @@ export default class PopOver {
           'top': null,
           'left': null
         });
+
+        this._root.dispatch('movein');
       });
   }
 
-  _hide(callback) {
-    if (this._fade) {
-      this._hideFade(callback);
-    } else {
-      callback();
-    }
-
-    if (this._move) {
-      this._hideMove();
-    }
-  }
-
-  _hideFade(callback) {
+  _hideFade() {
     this._root
       .transition()
       .style('opacity', 0)
-      .on('end', callback);
+      .on('end', () => {
+        this._root.dispatch('fadeout');
+      });
   }
 
   _hideMove() {
@@ -235,7 +238,10 @@ export default class PopOver {
 
     this._inner
       .transition()
-      .style('top', bodyHeight + 'px');
+      .style('top', bodyHeight + 'px')
+      .on('end', () => {
+        this._root.dispatch('moveout');
+      });
   }
 
   _dimensions() {

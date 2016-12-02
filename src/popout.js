@@ -72,42 +72,30 @@ export default class PopOut {
         'z-index': 2
       });
 
-    this._root
-      .transition()
-      .style('opacity', 1);
-
     this._container.append(this);
     this._bind();
+    this.show();
   }
 
-  destroy(click) {
-    if (click === true && this._lock === true) {
-      return;
-    }
-
+  destroy() {
     this._unbind();
 
-    this._root
-      .transition()
-      .style('opacity', 0)
-      .on('end', () => {
-        if (this._media) {
-          this._media.destroy();
-          this._media = null;
-        }
+    if (this._media) {
+      this._media.destroy();
+      this._media = null;
+    }
 
-        if (this._slider) {
-          this._slider.destroy();
-          this._slider = null;
-        }
+    if (this._slider) {
+      this._slider.destroy();
+      this._slider = null;
+    }
 
-        this._container.append(this, false);
-        this._container = null;
+    this._container.append(this, false);
+    this._container = null;
 
-        this._root.dispatch('destroy');
-        this._root.remove();
-        this._root = null;
-      });
+    this._root.dispatch('destroy');
+    this._root.remove();
+    this._root = null;
   }
 
   inner() {
@@ -316,10 +304,32 @@ export default class PopOut {
     return this;
   }
 
+  show() {
+    this._root
+      .transition()
+      .style('opacity', 1)
+      .on('end', () => {
+        this._root.dispatch('show');
+      });
+  }
+
+  hide(click) {
+    if (click === true && this._lock === true) {
+      return;
+    }
+
+    this._root
+      .transition()
+      .style('opacity', 0)
+      .on('end', () => {
+        this._root.dispatch('hide');
+      });
+  }
+
   _bind(delay = 25) {
     select(window).on('resize.scola-pop-out',
       debounce(() => this._rerender(), delay));
-    this._root.on('click.scola-pop-out', () => this.destroy(true));
+    this._root.on('click.scola-pop-out', () => this.hide(true));
     this._inner.on('click.scola-pop-out', () => event.stopPropagation());
   }
 

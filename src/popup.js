@@ -38,37 +38,26 @@ export default class PopUp {
         'width': '17em'
       });
 
-    this._root
-      .transition()
-      .style('opacity', 1);
-
     this._container.append(this, true);
+
     this._bind();
+    this.show();
   }
 
-  destroy(click) {
-    if (click === true && this._lock === true) {
-      return;
-    }
-
+  destroy() {
     this._unbind();
 
-    this._root
-      .transition()
-      .style('opacity', 0)
-      .on('end', () => {
-        if (this._body) {
-          this._body.destroy();
-          this._body = null;
-        }
+    if (this._body) {
+      this._body.destroy();
+      this._body = null;
+    }
 
-        this._container.append(this, false);
-        this._container = null;
+    this._container.append(this, false);
+    this._container = null;
 
-        this._root.dispatch('destroy');
-        this._root.remove();
-        this._root = null;
-      });
+    this._root.dispatch('destroy');
+    this._root.remove();
+    this._root = null;
   }
 
   root() {
@@ -100,8 +89,30 @@ export default class PopUp {
     return this;
   }
 
+  show() {
+    this._root
+      .transition()
+      .style('opacity', 1)
+      .on('end', () => {
+        this._root.dispatch('show');
+      });
+  }
+
+  hide(click) {
+    if (click === true && this._lock === true) {
+      return;
+    }
+
+    this._root
+      .transition()
+      .style('opacity', 0)
+      .on('end', () => {
+        this._root.dispatch('hide');
+      });
+  }
+
   _bind() {
-    this._root.on('click.scola-pop-up', () => this.destroy(true));
+    this._root.on('click.scola-pop-up', () => this.hide(true));
     this._inner.on('click.scola-pop-up', () => event.stopPropagation());
   }
 
