@@ -51,23 +51,31 @@ export default class PopButton {
     return this._root;
   }
 
-  text(value) {
-    if (typeof value === 'undefined') {
+  first(value = null) {
+    if (value === null) {
+      return this._first;
+    }
+
+    this._first = value;
+    return this._style();
+  }
+
+  direction(value = null) {
+    if (value === null) {
+      return this._direction;
+    }
+
+    this._direction = value;
+    return this._style();
+  }
+
+  text(value = null) {
+    if (value === null) {
       return this._text;
     }
 
     this._text.text(value);
     return this;
-  }
-
-  direction(value) {
-    this._direction = value;
-    return this._style();
-  }
-
-  first(value) {
-    this._first = value;
-    return this._style();
   }
 
   _style() {

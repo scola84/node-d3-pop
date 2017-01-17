@@ -35,7 +35,7 @@ export default class Container {
     return this._root;
   }
 
-  append(child, action) {
+  append(child, action = true) {
     if (action === true) {
       this._children.add(child);
       this._root.node().appendChild(child.root().node());

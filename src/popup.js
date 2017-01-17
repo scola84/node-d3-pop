@@ -5,8 +5,8 @@ import 'd3-transition';
 import '@scola/d3-media';
 
 export default class PopUp {
-  constructor(container) {
-    this._container = container;
+  constructor() {
+    this._container = null;
 
     this._lock = false;
     this._body = null;
@@ -38,19 +38,13 @@ export default class PopUp {
         'width': '17em'
       });
 
-    this._container.append(this, true);
-
     this._bind();
     this.show();
   }
 
   destroy() {
     this._unbind();
-
-    if (this._body) {
-      this._body.destroy();
-      this._body = null;
-    }
+    this._deleteBody();
 
     this._container.append(this, false);
     this._container = null;
@@ -64,29 +58,36 @@ export default class PopUp {
     return this._root;
   }
 
-  lock(value) {
+  container(value = null) {
+    if (value === null) {
+      return this._container;
+    }
+
+    this._container = value;
+    this._container.append(this);
+
+    return this;
+  }
+
+  lock(value = null) {
+    if (value === null) {
+      return this._lock;
+    }
+
     this._lock = value;
     return this;
   }
 
-  body(action) {
-    if (typeof action === 'undefined') {
-      return this._body;
-    }
-
+  body(action = null) {
     if (action === false) {
-      this._body.destroy();
-      this._body = null;
-
-      return this;
+      return this._deleteBody();
     }
 
-    this._body = new Body();
-    this._body.direction('row');
+    if (!this._body) {
+      this._insertBody();
+    }
 
-    this._inner.node().appendChild(this._body.root().node());
-
-    return this;
+    return this._body;
   }
 
   show() {
@@ -119,5 +120,24 @@ export default class PopUp {
   _unbind() {
     this._root.on('click.scola-pop-up', null);
     this._inner.on('click.scola-pop-up', null);
+  }
+
+  _insertBody() {
+    this._body = new Body();
+    this._body.direction('row');
+
+    this._inner.node()
+      .appendChild(this._body.root().node());
+
+    return this;
+  }
+
+  _deleteBody() {
+    if (this._body) {
+      this._body.destroy();
+      this._body = null;
+    }
+
+    return this;
   }
 }

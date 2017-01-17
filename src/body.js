@@ -37,7 +37,51 @@ export default class Body {
     return this._root;
   }
 
-  append(button, action) {
+  direction(value) {
+    this._direction = value;
+
+    this._buttons.style('flex-direction', value);
+
+    if (this._direction === 'row') {
+      this._buttons.style('height', '3em');
+    }
+
+    return this;
+  }
+
+  title(value = null) {
+    if (value === null) {
+      return this._title;
+    }
+
+    if (value === false) {
+      return this._deleteTitle();
+    }
+
+    if (this._title) {
+      return this._updateTitle(value);
+    }
+
+    return this._insertTitle(value);
+  }
+
+  text(value = null) {
+    if (value === null) {
+      return this._text;
+    }
+
+    if (value === false) {
+      return this._deleteText();
+    }
+
+    if (this._text) {
+      return this._updateText(value);
+    }
+
+    return this._insertText(value);
+  }
+
+  append(button, action = true) {
     if (action === true) {
       this._buttons.node().appendChild(button.root().node());
     } else if (action === false) {
@@ -53,45 +97,30 @@ export default class Body {
     return this;
   }
 
-  text(value) {
-    if (typeof value === 'undefined') {
-      return this._text;
-    }
+  _insertTitle(title) {
+    this._title = this._root
+      .append('div')
+      .classed('scola title', true)
+      .styles({
+        'font-weight': 'bold',
+        'line-height': '1.5em',
+        'order': 1,
+        'padding': '1em'
+      })
+      .text(title);
 
-    if (value === false) {
-      return this._deleteText();
-    }
-
-    if (this._text) {
-      return this._updateText(value);
-    }
-
-    return this._insertText(value);
+    return this;
   }
 
-  title(value) {
-    if (typeof value === 'undefined') {
-      return this._title;
-    }
+  _updateTitle(title) {
+    this._title.text(title);
+    return this;
+  }
 
-    if (value === false) {
-      return this._deleteTitle();
-    }
-
+  _deleteTitle() {
     if (this._title) {
-      return this._updateTitle(value);
-    }
-
-    return this._insertTitle(value);
-  }
-
-  direction(value) {
-    this._direction = value;
-
-    this._buttons.style('flex-direction', value);
-
-    if (this._direction === 'row') {
-      this._buttons.style('height', '3em');
+      this._title.remove();
+      this._title = null;
     }
 
     return this;
@@ -129,35 +158,6 @@ export default class Body {
 
     if (this._title) {
       this._title.style('padding-bottom', '1em');
-    }
-
-    return this;
-  }
-
-  _insertTitle(title) {
-    this._title = this._root
-      .append('div')
-      .classed('scola title', true)
-      .styles({
-        'font-weight': 'bold',
-        'line-height': '1.5em',
-        'order': 1,
-        'padding': '1em'
-      })
-      .text(title);
-
-    return this;
-  }
-
-  _updateTitle(title) {
-    this._title.text(title);
-    return this;
-  }
-
-  _deleteTitle() {
-    if (this._title) {
-      this._title.remove();
-      this._title = null;
     }
 
     return this;

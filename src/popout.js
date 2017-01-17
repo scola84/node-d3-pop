@@ -8,20 +8,22 @@ import 'd3-transition';
 import '@scola/d3-media';
 
 export default class PopOut {
-  constructor(container) {
-    this._container = container;
+  constructor() {
+    this._container = null;
+    this._anchorElement = null;
+    this._insideElement = null;
+
+    this._lock = false;
+    this._height = null;
+    this._styles = null;
+    this._width = null;
+
+    this._media = null;
+    this._slider = null;
 
     this._fontSize = parseFloat(select('body').style('font-size'));
     this._isFullScreen = null;
     this._positions = [];
-
-    this._lock = false;
-    this._width = null;
-    this._height = null;
-    this._styles = null;
-
-    this._media = null;
-    this._slider = null;
 
     this._root = select('body')
       .append('div')
@@ -72,23 +74,14 @@ export default class PopOut {
         'z-index': 2
       });
 
-    this._container.append(this);
     this._bind();
     this.show();
   }
 
   destroy() {
     this._unbind();
-
-    if (this._media) {
-      this._media.destroy();
-      this._media = null;
-    }
-
-    if (this._slider) {
-      this._slider.destroy();
-      this._slider = null;
-    }
+    this._deleteMedia();
+    this._deleteSlider();
 
     this._container.append(this, false);
     this._container = null;
@@ -98,15 +91,48 @@ export default class PopOut {
     this._root = null;
   }
 
-  inner() {
-    return this._inner;
-  }
-
   root() {
     return this._root;
   }
 
-  lock(value) {
+  inner() {
+    return this._inner;
+  }
+
+  container(value = null) {
+    if (value === null) {
+      return this._container;
+    }
+
+    this._container = value;
+    this._container.append(this);
+
+    return this;
+  }
+
+  anchor(element = null) {
+    if (element === null) {
+      return this._anchorElement;
+    }
+
+    this._anchorElement = element;
+    return this;
+  }
+
+  inside(element = null) {
+    if (element === null) {
+      return this._insideElement;
+    }
+
+    this._insideElement = element;
+    return this;
+  }
+
+  lock(value = null) {
+    if (value === null) {
+      return this._lock;
+    }
+
     this._lock = value;
     return this;
   }
@@ -117,63 +143,26 @@ export default class PopOut {
     }
 
     if (width === false) {
-      this._media.destroy();
-      this._media = null;
-
-      return this;
+      return this._deleteMedia();
     }
 
-    this._width = width;
-    this._height = height;
-    this._styles = Object.assign({
-      'border-radius': '1em'
-    }, styles);
-
-    this._media = this._wrapper
-      .media(`not all and (min-width: ${width})`)
-      .call(() => this._fullScreen(true))
-      .media(`not all and (min-height: ${height})`)
-      .call(() => this._fullScreen(true))
-      .media(`(min-width: ${width}) and (min-height: ${height})`)
-      .style('width', width)
-      .style('height', height)
-      .styles(this._styles)
-      .call(() => this._fullScreen(false))
-      .start();
+    if (!this._media) {
+      this._insertMedia(width, height, styles);
+    }
 
     return this;
   }
 
-  slider(action) {
-    if (typeof action === 'undefined') {
-      return this._slider;
-    }
-
+  slider(action = true) {
     if (action === false) {
-      this._slider.destroy();
-      this._slider = null;
-
-      return this;
+      return this._deleteSlider();
     }
 
-    this._slider = slider()
-      .remove(true)
-      .rotate(false);
+    if (!this._slider) {
+      this._insertSlider();
+    }
 
-    this._inner.node()
-      .appendChild(this._slider.root().node());
-
-    return this;
-  }
-
-  anchor(element) {
-    this._anchorElement = element;
-    return this;
-  }
-
-  inside(element) {
-    this._insideElement = element;
-    return this;
+    return this._slider;
   }
 
   left() {
@@ -337,6 +326,57 @@ export default class PopOut {
     select(window).on('resize.scola-pop-out', null);
     this._root.on('click.scola-pop-out', null);
     this._inner.on('click.scola-pop-out', null);
+  }
+
+  _insertMedia(width, height, styles) {
+    this._width = width;
+    this._height = height;
+    this._styles = Object.assign({
+      'border-radius': '1em'
+    }, styles);
+
+    this._media = this._wrapper
+      .media(`not all and (min-width: ${width})`)
+      .call(() => this._fullScreen(true))
+      .media(`not all and (min-height: ${height})`)
+      .call(() => this._fullScreen(true))
+      .media(`(min-width: ${width}) and (min-height: ${height})`)
+      .style('width', width)
+      .style('height', height)
+      .styles(this._styles)
+      .call(() => this._fullScreen(false))
+      .start();
+
+    return this;
+  }
+
+  _deleteMedia() {
+    if (this._media) {
+      this._media.destroy();
+      this._media = null;
+    }
+
+    return this;
+  }
+
+  _insertSlider() {
+    this._slider = slider()
+      .remove(true)
+      .rotate(false);
+
+    this._inner.node()
+      .appendChild(this._slider.root().node());
+
+    return this;
+  }
+
+  _deleteSlider() {
+    if (this._slider) {
+      this._slider.destroy();
+      this._slider = null;
+    }
+
+    return this;
   }
 
   _leftInside() {
@@ -605,8 +645,8 @@ export default class PopOut {
     });
   }
 
-  _fullScreen(fullScreen) {
-    if (typeof fullScreen === 'undefined') {
+  _fullScreen(fullScreen = null) {
+    if (fullScreen === null) {
       return this._isFullScreen;
     }
 
@@ -687,4 +727,5 @@ export default class PopOut {
 
     return position;
   }
+
 }

@@ -15,22 +15,26 @@ function container() {
   return instance;
 }
 
-export function popAction(options) {
-  return new PopAction(container(), options);
+export function popAction() {
+  return new PopAction()
+    .container(container());
 }
 
 export function popButton() {
   return new PopButton();
 }
 
-export function popOut(options) {
-  return new PopOut(container(), options);
+export function popOut() {
+  return new PopOut()
+    .container(container());
 }
 
-export function popOver(options) {
-  return new PopOver(container(), options);
+export function popOver() {
+  return new PopOver()
+    .container(container());
 }
 
 export function popUp() {
-  return new PopUp(container());
+  return new PopUp()
+    .container(container());
 }

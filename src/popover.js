@@ -5,16 +5,16 @@ import 'd3-transition';
 import '@scola/d3-media';
 
 export default class PopOver {
-  constructor(container) {
-    this._container = container;
+  constructor() {
+    this._container = null;
 
     this._fade = true;
     this._lock = true;
     this._move = true;
 
-    this._width = null;
     this._height = null;
     this._styles = null;
+    this._width = null;
 
     this._media = null;
     this._slider = null;
@@ -47,22 +47,13 @@ export default class PopOver {
         'width': '100%'
       });
 
-    this._container.append(this, true);
     this._bind();
   }
 
   destroy() {
     this._unbind();
-
-    if (this._media) {
-      this._media.destroy();
-      this._media = null;
-    }
-
-    if (this._slider) {
-      this._slider.destroy();
-      this._slider = null;
-    }
+    this._deleteMedia();
+    this._deleteSlider();
 
     this._container.append(this, false);
     this._container = null;
@@ -76,17 +67,40 @@ export default class PopOver {
     return this._root;
   }
 
-  fade(value) {
+  container(value = null) {
+    if (value === null) {
+      return this._container;
+    }
+
+    this._container = value;
+    this._container.append(this);
+
+    return this;
+  }
+
+  fade(value = null) {
+    if (value === null) {
+      return this._fade;
+    }
+
     this._fade = value;
     return this;
   }
 
-  lock(value) {
+  lock(value = null) {
+    if (value === null) {
+      return this._lock;
+    }
+
     this._lock = value;
     return this;
   }
 
-  move(value) {
+  move(value = null) {
+    if (value === null) {
+      return this._move;
+    }
+
     this._move = value;
     return this;
   }
@@ -97,50 +111,26 @@ export default class PopOver {
     }
 
     if (width === false) {
-      this._media.destroy();
-      this._media = null;
-
-      return this;
+      return this._deleteMedia();
     }
 
-    this._width = width;
-    this._height = height;
-    this._styles = Object.assign({
-      'border-radius': '1em'
-    }, styles);
-
-    this._media = this._inner
-      .media(`(min-width: ${width}) and (min-height: ${height})`)
-      .style('width', this._width)
-      .style('height', this._height)
-      .styles(this._styles)
-      .start();
-
-    this.show();
+    if (!this._media) {
+      this._insertMedia(width, height, styles);
+    }
 
     return this;
   }
 
-  slider(action) {
-    if (typeof action === 'undefined') {
-      return this._slider;
-    }
-
+  slider(action = true) {
     if (action === false) {
-      this._slider.destroy();
-      this._slider = null;
-
-      return this;
+      return this._deleteSlider();
     }
 
-    this._slider = slider()
-      .remove(true)
-      .rotate(false);
+    if (!this._slider) {
+      this._insertSlider();
+    }
 
-    this._inner.node()
-      .appendChild(this._slider.root().node());
-
-    return this;
+    return this._slider;
   }
 
   show() {
@@ -242,6 +232,54 @@ export default class PopOver {
       .on('end', () => {
         this._root.dispatch('moveout');
       });
+  }
+
+  _insertMedia(width, height, styles) {
+    this._width = width;
+    this._height = height;
+    this._styles = Object.assign({
+      'border-radius': '1em'
+    }, styles);
+
+    this._media = this._inner
+      .media(`(min-width: ${width}) and (min-height: ${height})`)
+      .style('width', this._width)
+      .style('height', this._height)
+      .styles(this._styles)
+      .start();
+
+    this.show();
+
+    return this;
+  }
+
+  _deleteMedia() {
+    if (this._media) {
+      this._media.destroy();
+      this._media = null;
+    }
+
+    return this;
+  }
+
+  _insertSlider() {
+    this._slider = slider()
+      .remove(true)
+      .rotate(false);
+
+    this._inner.node()
+      .appendChild(this._slider.root().node());
+
+    return this;
+  }
+
+  _deleteSlider() {
+    if (this._slider) {
+      this._slider.destroy();
+      this._slider = null;
+    }
+
+    return this;
   }
 
   _dimensions() {
