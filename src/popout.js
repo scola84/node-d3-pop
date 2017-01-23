@@ -302,11 +302,7 @@ export default class PopOut {
       });
   }
 
-  hide(click) {
-    if (click === true && this._lock === true) {
-      return;
-    }
-
+  hide() {
     this._root
       .transition()
       .style('opacity', 0)
@@ -315,10 +311,18 @@ export default class PopOut {
       });
   }
 
+  click() {
+    if (this._lock === true) {
+      return;
+    }
+
+    this.hide();
+  }
+
   _bind(delay = 25) {
     select(window).on('resize.scola-pop-out',
       debounce(() => this._rerender(), delay));
-    this._root.on('click.scola-pop-out', () => this.hide(true));
+    this._root.on('click.scola-pop-out', () => this.click());
     this._inner.on('click.scola-pop-out', () => event.stopPropagation());
   }
 

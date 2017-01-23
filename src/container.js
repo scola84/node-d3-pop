@@ -59,7 +59,7 @@ export default class Container {
 
   _handleKeyUp() {
     if (event.keyCode === 27 && this._children.size > 0) {
-      Array.from(this._children).pop().hide(true);
+      Array.from(this._children).pop().click();
     }
   }
 

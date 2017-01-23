@@ -99,11 +99,7 @@ export default class PopUp {
       });
   }
 
-  hide(click) {
-    if (click === true && this._lock === true) {
-      return;
-    }
-
+  hide() {
     this._root
       .transition()
       .style('opacity', 0)
@@ -112,8 +108,16 @@ export default class PopUp {
       });
   }
 
+  click() {
+    if (this._lock === true) {
+      return;
+    }
+
+    this.hide();
+  }
+
   _bind() {
-    this._root.on('click.scola-pop-up', () => this.hide(true));
+    this._root.on('click.scola-pop-up', () => this.click());
     this._inner.on('click.scola-pop-up', () => event.stopPropagation());
   }
 
