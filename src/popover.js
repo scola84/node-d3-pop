@@ -31,7 +31,6 @@ export default class PopOver {
         'display': 'flex',
         'justify-content': 'center',
         'left': '0px',
-        'opacity': 0,
         'position': 'fixed',
         'right': '0px',
         'top': '0px'
@@ -173,6 +172,7 @@ export default class PopOver {
     }
 
     this._root
+      .style('opacity', 0)
       .transition()
       .style('opacity', 1)
       .on('end', callback);

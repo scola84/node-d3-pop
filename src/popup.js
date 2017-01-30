@@ -90,22 +90,18 @@ export default class PopUp {
     return this._body;
   }
 
-  show() {
+  show(callback = () => {}) {
     this._root
       .transition()
       .style('opacity', 1)
-      .on('end', () => {
-        this._root.dispatch('show');
-      });
+      .on('end', callback);
   }
 
-  hide() {
+  hide(callback = () => {}) {
     this._root
       .transition()
       .style('opacity', 0)
-      .on('end', () => {
-        this._root.dispatch('hide');
-      });
+      .on('end', callback);
   }
 
   click() {
