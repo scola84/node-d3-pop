@@ -82,19 +82,11 @@ export default class Body {
   }
 
   append(button, action = true) {
-    if (action === true) {
-      this._buttons.node().appendChild(button.root().node());
-    } else if (action === false) {
-      button.root().remove();
+    if (action === false) {
+      return this._deleteButton(button);
     }
 
-    if (this._direction === 'column') {
-      this._buttons.style('height',
-        ((this._buttons.select('div.button').size() + 1) * 3) + 'em');
-    }
-
-    button.direction(this._direction);
-    return this;
+    return this._insertButton(button);
   }
 
   _insertTitle(title) {
@@ -161,5 +153,23 @@ export default class Body {
     }
 
     return this;
+  }
+
+  _insertButton(button) {
+    this._buttons.node()
+      .appendChild(button.root().node());
+
+    if (this._direction === 'column') {
+      this._buttons.style('height',
+        ((this._buttons.select('div.button').size() + 1) * 3) + 'em');
+    }
+
+    button.direction(this._direction);
+    return button;
+  }
+
+  _deleteButton(button) {
+    button.root().remove();
+    return button;
   }
 }

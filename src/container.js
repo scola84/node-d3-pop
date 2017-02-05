@@ -36,17 +36,11 @@ export default class Container {
   }
 
   append(child, action = true) {
-    if (action === true) {
-      this._children.add(child);
-      this._root.node().appendChild(child.root().node());
-      this._show();
-    } else if (action === false) {
-      this._children.delete(child);
-      child.root().node().remove();
-      this._hide();
+    if (action === false) {
+      return this._deleteChild(child);
     }
 
-    return this;
+    return this._insertChild(child);
   }
 
   _bind() {
@@ -77,5 +71,21 @@ export default class Container {
     }
 
     return this;
+  }
+
+  _insertChild(child) {
+    this._children.add(child);
+    this._root.node().appendChild(child.root().node());
+
+    this._show();
+    return child;
+  }
+
+  _deleteChild(child) {
+    this._children.delete(child);
+    child.root().node().remove();
+
+    this._hide();
+    return child;
   }
 }
