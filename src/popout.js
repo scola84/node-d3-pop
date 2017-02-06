@@ -74,6 +74,8 @@ export default class PopOut {
         'z-index': 2
       });
 
+    this._handleRerender = debounce(() => this._rerender(), 100);
+
     this._bind();
     this.show();
   }
@@ -85,6 +87,9 @@ export default class PopOut {
 
     this._container.append(this, false);
     this._container = null;
+
+    this._handleRerender.cancel();
+    this._handleRerender = null;
 
     this._root.dispatch('destroy');
     this._root.remove();
@@ -315,17 +320,16 @@ export default class PopOut {
     this.hide();
   }
 
-  _bind(delay = 25) {
-    select(window).on('resize.scola-pop-out',
-      debounce(() => this._rerender(), delay));
-    this._root.on('click.scola-pop-out', () => this.click());
-    this._inner.on('click.scola-pop-out', () => event.stopPropagation());
+  _bind() {
+    select(window).on('resize.scola-pop', this._handleRerender);
+    this._root.on('click.scola-pop', () => this.click());
+    this._inner.on('click.scola-pop', () => event.stopPropagation());
   }
 
   _unbind() {
-    select(window).on('resize.scola-pop-out', null);
-    this._root.on('click.scola-pop-out', null);
-    this._inner.on('click.scola-pop-out', null);
+    select(window).on('resize.scola-pop', null);
+    this._root.on('click.scola-pop', null);
+    this._inner.on('click.scola-pop', null);
   }
 
   _insertMedia(width, height, styles) {

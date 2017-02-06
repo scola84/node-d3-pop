@@ -156,13 +156,13 @@ export default class PopOver {
   }
 
   _bind() {
-    this._root.on('click.scola-pop-over', () => this.click());
-    this._inner.on('click.scola-pop-over', () => event.stopPropagation());
+    this._root.on('click.scola-pop', () => this.click());
+    this._inner.on('click.scola-pop', () => event.stopPropagation());
   }
 
   _unbind() {
-    this._root.on('click.scola-pop-over', null);
-    this._inner.on('click.scola-pop-over', null);
+    this._root.on('click.scola-pop', null);
+    this._inner.on('click.scola-pop', null);
   }
 
   _showFade(callback = () => {}) {

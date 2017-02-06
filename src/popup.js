@@ -113,13 +113,13 @@ export default class PopUp {
   }
 
   _bind() {
-    this._root.on('click.scola-pop-up', () => this.click());
-    this._inner.on('click.scola-pop-up', () => event.stopPropagation());
+    this._root.on('click.scola-pop', () => this.click());
+    this._inner.on('click.scola-pop', () => event.stopPropagation());
   }
 
   _unbind() {
-    this._root.on('click.scola-pop-up', null);
-    this._inner.on('click.scola-pop-up', null);
+    this._root.on('click.scola-pop', null);
+    this._inner.on('click.scola-pop', null);
   }
 
   _insertBody() {
