@@ -1,5 +1,4 @@
-import { event, select } from 'd3-selection';
-import 'd3-selection-multi';
+import { event, select } from 'd3';
 
 export default class Container {
   constructor() {
@@ -44,14 +43,14 @@ export default class Container {
   }
 
   _bind() {
-    select(window).on('keyup.scola-pop', () => this._handleKeyUp());
+    select(window).on('keyup.scola-pop', () => this._keyUp());
   }
 
   _unbind() {
     select(window).on('keyup.scola-pop', null);
   }
 
-  _handleKeyUp() {
+  _keyUp() {
     if (event.keyCode === 27 && this._children.size > 0) {
       Array.from(this._children).pop().click();
     }

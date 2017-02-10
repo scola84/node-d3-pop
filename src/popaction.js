@@ -1,7 +1,5 @@
 import Body from './body';
 import PopOut from './popout';
-import 'd3-selection-multi';
-import '@scola/d3-media';
 
 export default class PopAction extends PopOut {
   constructor() {
@@ -25,8 +23,8 @@ export default class PopAction extends PopOut {
     super.destroy();
   }
 
-  media(width = '21.333em', height = '21.333em', styles = {}) {
-    const result = super.media(width, height, styles);
+  size(width = '21.333em', height = '21.333em', styles = {}) {
+    const result = super.size(width, height, styles);
 
     if (width === null) {
       return result;

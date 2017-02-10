@@ -1,11 +1,8 @@
 /* eslint prefer-reflect: "off" */
 
-import { event, select } from 'd3-selection';
+import { event, select } from 'd3';
 import { slider } from '@scola/d3-slider';
 import debounce from 'lodash-es/debounce.js';
-import 'd3-selection-multi';
-import 'd3-transition';
-import '@scola/d3-media';
 
 export default class PopOut {
   constructor() {
@@ -142,7 +139,7 @@ export default class PopOut {
     return this;
   }
 
-  media(width = '21.333em', height = '21.333em', styles = {}) {
+  size(width = '21.333em', height = '21.333em', styles = {}) {
     if (width === null) {
       return this._media;
     }
@@ -321,7 +318,7 @@ export default class PopOut {
   }
 
   _bind() {
-    select(window).on('resize.scola-pop', this._handleRerender);
+    select(window).on('resize.scola-pop', () => this._handleRerender());
     this._root.on('click.scola-pop', () => this.click());
     this._inner.on('click.scola-pop', () => event.stopPropagation());
   }

@@ -1,9 +1,6 @@
 import parallel from 'async/parallel';
-import { event, select } from 'd3-selection';
+import { event, select } from 'd3';
 import { slider } from '@scola/d3-slider';
-import 'd3-selection-multi';
-import 'd3-transition';
-import '@scola/d3-media';
 
 export default class PopOver {
   constructor() {
@@ -105,7 +102,7 @@ export default class PopOver {
     return this;
   }
 
-  media(width = '34em', height = '39em', styles = {}) {
+  size(width = '34em', height = '39em', styles = {}) {
     if (width === null) {
       return this._media;
     }

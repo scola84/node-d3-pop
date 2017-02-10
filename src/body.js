@@ -1,5 +1,4 @@
-import { select } from 'd3-selection';
-import 'd3-selection-multi';
+import { select } from 'd3';
 
 export default class Body {
   constructor() {
