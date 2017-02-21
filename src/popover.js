@@ -40,7 +40,7 @@ export default class PopOver {
         'background': '#FFF',
         'height': '100%',
         'overflow': 'hidden',
-        'transform': 'scale(1)',
+        'position': 'relative',
         'width': '100%'
       });
 

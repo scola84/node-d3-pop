@@ -54,7 +54,6 @@ export default class PopOut {
         'height': '100%',
         'overflow': 'hidden',
         'position': 'absolute',
-        'transform': 'scale(1)',
         'width': '100%'
       });
 
