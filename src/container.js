@@ -74,7 +74,7 @@ export default class Container {
 
   _insertChild(child) {
     this._children.add(child);
-    this._root.node().appendChild(child.root().node());
+    this._root.append(() => child.root().node());
 
     this._show();
     return child;

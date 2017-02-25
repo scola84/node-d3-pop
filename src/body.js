@@ -155,8 +155,7 @@ export default class Body {
   }
 
   _insertButton(button) {
-    this._buttons.node()
-      .appendChild(button.root().node());
+    this._buttons.append(() => button.root().node());
 
     if (this._direction === 'column') {
       this._buttons.style('height',

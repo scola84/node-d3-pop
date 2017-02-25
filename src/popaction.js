@@ -84,8 +84,8 @@ export default class PopAction extends PopOut {
     this._body = new Body();
     this._body.direction('column');
 
-    this._inner.node()
-      .appendChild(this._body.root().node());
+    this._inner
+      .append(() => this._body.root().node());
 
     return this;
   }

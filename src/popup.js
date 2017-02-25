@@ -106,7 +106,7 @@ export default class PopUp {
       return;
     }
 
-    this.hide();
+    this.hide(() => this.destroy());
   }
 
   _bind() {
@@ -123,8 +123,8 @@ export default class PopUp {
     this._body = new Body();
     this._body.direction('row');
 
-    this._inner.node()
-      .appendChild(this._body.root().node());
+    this._inner
+      .append(() => this._body.root().node());
 
     return this;
   }

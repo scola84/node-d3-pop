@@ -54,6 +54,7 @@ export default class PopOut {
         'height': '100%',
         'overflow': 'hidden',
         'position': 'absolute',
+        'transform': 'scale(1)',
         'width': '100%'
       });
 
@@ -313,7 +314,7 @@ export default class PopOut {
       return;
     }
 
-    this.hide();
+    this.hide(() => this.destroy());
   }
 
   _bind() {
@@ -364,8 +365,8 @@ export default class PopOut {
       .remove(true)
       .rotate(false);
 
-    this._inner.node()
-      .appendChild(this._slider.root().node());
+    this._inner
+      .append(() => this._slider.root().node());
 
     return this;
   }

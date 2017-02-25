@@ -1,9 +1,13 @@
 import PopButton from './src/button';
 import Container from './src/container';
+
 import PopAction from './src/popaction';
 import PopOut from './src/popout';
 import PopOver from './src/popover';
 import PopUp from './src/popup';
+
+import PopAlert from './src/helper/alert';
+import PopConfirm from './src/helper/confirm';
 
 let instance = null;
 
@@ -36,5 +40,15 @@ export function popOver() {
 
 export function popUp() {
   return new PopUp()
+    .container(container());
+}
+
+export function popAlert() {
+  return new PopAlert()
+    .container(container());
+}
+
+export function popConfirm() {
+  return new PopConfirm()
     .container(container());
 }
