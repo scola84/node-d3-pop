@@ -1,8 +1,4 @@
-import {
-  event,
-  select,
-  selectAll
-} from 'd3';
+import { event, select } from 'd3';
 
 export default class Container {
   constructor() {
@@ -61,25 +57,15 @@ export default class Container {
   }
 
   _show() {
-    if (this._children.size !== 1) {
-      return;
+    if (this._children.size === 1) {
+      this._root.style('display', 'block');
     }
-
-    this._root.style('display', 'block');
-
-    selectAll('.scola.app button, .scola.app input')
-      .attr('disabled', 'disabled');
   }
 
   _hide() {
-    if (this._children.size !== 0) {
-      return;
+    if (this._children.size === 0) {
+      this._root.style('display', 'none');
     }
-
-    this._root.style('display', 'none');
-
-    selectAll('.scola.app button, .scola.app input')
-      .attr('disabled', null);
   }
 
   _insertChild(child) {
