@@ -62,9 +62,7 @@ export default class PopOut {
       .append('div')
       .classed('scola triangle', true)
       .styles({
-        'border-color': 'transparent',
-        'border-style': 'solid',
-        'border-width': '0.75em',
+        'border': '0.75em solid transparent',
         'height': '0px',
         'position': 'absolute',
         'width': '0px',

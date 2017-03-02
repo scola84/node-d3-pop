@@ -45,7 +45,7 @@ export default class PopButton {
       })
       .styles({
         'background': 'none',
-        'border': 0,
+        'border': '1px solid transparent',
         'color': 'inherit',
         'cursor': 'pointer',
         'line-height': '2em',
@@ -105,20 +105,14 @@ export default class PopButton {
   _style() {
     if (this._direction === 'column') {
       this._border.style('display', 'none');
-
-      if (this._first) {
-        this._root.style('border-top-color', 'transparent');
-      } else {
-        this._root.style('border-top-color', '#CCC');
-      }
+      this._root.style('border-top-color', () => {
+        return this._first ? 'transparent' : '#CCC';
+      });
     } else if (this._direction === 'row') {
       this._root.style('border-top-color', '#CCC');
-
-      if (this._first) {
-        this._border.style('display', 'none');
-      } else {
-        this._border.style('display', 'inline-flex');
-      }
+      this._border.style('display', () => {
+        return this._first ? 'none' : 'inline-flex';
+      });
     }
 
     return this;
