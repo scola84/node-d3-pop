@@ -29,15 +29,6 @@ export default class PopConfirm extends PopAlert {
     return this;
   }
 
-  ok(text, callback) {
-    super.ok(text, callback);
-
-    this._cancelButton
-      .text()
-      .node()
-      .focus();
-  }
-
   _bindCancel() {
     this._cancelButton.root().on('click', () => this._clickCancel());
   }

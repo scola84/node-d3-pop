@@ -3,7 +3,7 @@ import PopButton from '../button';
 
 export default class popAlert {
   constructor() {
-    this._popup = new PopUp();
+    this._popup = new PopUp().lock(true);
     this._okButton = new PopButton();
     this._okCallback = null;
   }
@@ -44,11 +44,6 @@ export default class popAlert {
     this._popup
       .body()
       .append(this._okButton);
-
-    this._okButton
-      .text()
-      .node()
-      .focus();
 
     this._bindOk();
     return this;
