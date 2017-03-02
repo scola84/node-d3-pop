@@ -13,6 +13,10 @@ export default class popAlert {
     this._popup.destroy();
   }
 
+  popup(){
+    return this._popup;
+  }
+
   container(value) {
     this._popup.container(value);
     return this;
