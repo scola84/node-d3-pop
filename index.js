@@ -19,36 +19,46 @@ function container() {
   return instance;
 }
 
-export function popAction() {
+function popAction() {
   return new PopAction()
     .container(container());
 }
 
-export function popButton() {
+function popButton() {
   return new PopButton();
 }
 
-export function popOut() {
+function popOut() {
   return new PopOut()
     .container(container());
 }
 
-export function popOver() {
+function popOver() {
   return new PopOver()
     .container(container());
 }
 
-export function popUp() {
+function popUp() {
   return new PopUp()
     .container(container());
 }
 
-export function popAlert() {
+function popAlert() {
   return new PopAlert()
     .container(container());
 }
 
-export function popConfirm() {
+function popConfirm() {
   return new PopConfirm()
     .container(container());
 }
+
+export {
+  popAction,
+  popButton,
+  popOut,
+  popOver,
+  popUp,
+  popAlert,
+  popConfirm
+};
