@@ -2,7 +2,7 @@ import { event, select } from 'd3';
 
 export default class Container {
   constructor() {
-    this._children = new Set();
+    this._elements = new Set();
 
     this._root = select('body')
       .append('div')
@@ -22,8 +22,8 @@ export default class Container {
 
   destroy() {
     this._unbind();
-    this._children.forEach((child) => child.hide());
-    this._children.clear();
+    this._elements.forEach((element) => element.hide());
+    this._elements.clear();
 
     this._root.dispatch('destroy');
     this._root.remove();
@@ -34,12 +34,12 @@ export default class Container {
     return this._root;
   }
 
-  append(child, action = true) {
+  append(element, action = true) {
     if (action === false) {
-      return this._deleteChild(child);
+      return this._deleteElement(element);
     }
 
-    return this._insertChild(child);
+    return this._insertElement(element);
   }
 
   _bind() {
@@ -51,36 +51,36 @@ export default class Container {
   }
 
   _keyUp() {
-    if (event.keyCode === 27 && this._children.size > 0) {
-      Array.from(this._children).pop().click();
+    if (event.keyCode === 27 && this._elements.size > 0) {
+      Array.from(this._elements).pop().click();
     }
   }
 
   _show() {
-    if (this._children.size === 1) {
+    if (this._elements.size === 1) {
       this._root.style('display', 'block');
     }
   }
 
   _hide() {
-    if (this._children.size === 0) {
+    if (this._elements.size === 0) {
       this._root.style('display', 'none');
     }
   }
 
-  _insertChild(child) {
-    this._children.add(child);
-    this._root.append(() => child.root().node());
+  _insertElement(element) {
+    this._elements.add(element);
+    this._root.append(() => element.root().node());
 
     this._show();
-    return child;
+    return element;
   }
 
-  _deleteChild(child) {
-    this._children.delete(child);
-    child.root().node().remove();
+  _deleteElement(element) {
+    this._elements.delete(element);
+    element.root().node().remove();
 
     this._hide();
-    return child;
+    return element;
   }
 }
