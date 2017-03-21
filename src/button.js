@@ -47,7 +47,7 @@ export default class PopButton {
         'background': 'none',
         'border': '1px solid transparent',
         'color': 'inherit',
-        'cursor': 'pointer',
+        'cursor': 'inherit',
         'line-height': '2em',
         'margin': 0,
         'padding': '0 0.25em'
