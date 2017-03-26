@@ -1,5 +1,9 @@
-import parallel from 'async/parallel';
-import { event, select } from 'd3';
+import {
+  event,
+  select,
+  transition
+} from 'd3';
+
 import { slider } from '@scola/d3-slider';
 
 export default class PopOver {
@@ -131,18 +135,22 @@ export default class PopOver {
     return this._slider;
   }
 
-  show(callback = () => {}) {
-    parallel([
-      (c) => this._showFade(c),
-      (c) => this._showMove(c)
-    ], callback);
+  show() {
+    const timeline = transition();
+
+    this._showFade(timeline);
+    this._showMove(timeline);
+
+    return timeline;
   }
 
-  hide(callback = () => {}) {
-    parallel([
-      (c) => this._hideFade(c),
-      (c) => this._hideMove(c)
-    ], callback);
+  hide() {
+    const timeline = transition();
+
+    this._hideFade(timeline);
+    this._hideMove(timeline);
+
+    return timeline;
   }
 
   click() {
@@ -150,7 +158,7 @@ export default class PopOver {
       return;
     }
 
-    this.hide(() => this.destroy());
+    this.hide().on('end', () => this.destroy());
   }
 
   _bind() {
@@ -163,22 +171,19 @@ export default class PopOver {
     this._inner.on('click.scola-pop', null);
   }
 
-  _showFade(callback = () => {}) {
-    if (!this._fade) {
-      callback();
+  _showFade(timeline) {
+    if (this._fade === false) {
       return;
     }
 
     this._root
       .style('opacity', 0)
-      .transition()
-      .style('opacity', 1)
-      .on('end', callback);
+      .transition(timeline)
+      .style('opacity', 1);
   }
 
-  _showMove(callback = () => {}) {
-    if (!this._move) {
-      callback();
+  _showMove(timeline) {
+    if (this._move === false) {
       return;
     }
 
@@ -189,13 +194,13 @@ export default class PopOver {
       innerWidth
     } = this._dimensions();
 
-    this._inner.styles({
-      position: 'absolute',
-      top: bodyHeight + 'px',
-      left: ((bodyWidth - innerWidth) / 2) + 'px'
-    });
-
-    this._inner.transition()
+    this._inner
+      .styles({
+        'position': 'absolute',
+        'top': bodyHeight + 'px',
+        'left': ((bodyWidth - innerWidth) / 2) + 'px'
+      })
+      .transition(timeline)
       .style('top', ((bodyHeight - innerHeight) / 2) + 'px')
       .on('end', () => {
         this._inner.styles({
@@ -203,26 +208,21 @@ export default class PopOver {
           'top': null,
           'left': null
         });
-
-        callback();
       });
   }
 
-  _hideFade(callback = () => {}) {
-    if (!this._fade) {
-      callback();
+  _hideFade(timeline) {
+    if (this._fade === false) {
       return;
     }
 
     this._root
-      .transition()
-      .style('opacity', 0)
-      .on('end', callback);
+      .transition(timeline)
+      .style('opacity', 0);
   }
 
-  _hideMove(callback = () => {}) {
-    if (!this._move) {
-      callback();
+  _hideMove(timeline) {
+    if (this._move === false) {
       return;
     }
 
@@ -233,16 +233,14 @@ export default class PopOver {
       innerWidth
     } = this._dimensions();
 
-    this._inner.styles({
-      position: 'absolute',
-      top: ((bodyHeight - innerHeight) / 2) + 'px',
-      left: ((bodyWidth - innerWidth) / 2) + 'px'
-    });
-
     this._inner
-      .transition()
-      .style('top', bodyHeight + 'px')
-      .on('end', callback);
+      .styles({
+        'position': 'absolute',
+        'top': ((bodyHeight - innerHeight) / 2) + 'px',
+        'left': ((bodyWidth - innerWidth) / 2) + 'px'
+      })
+      .transition(timeline)
+      .style('top', bodyHeight + 'px');
   }
 
   _insertMedia(width, height, styles) {

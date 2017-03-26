@@ -293,18 +293,16 @@ export default class PopOut {
     return this;
   }
 
-  show(callback = () => {}) {
-    this._root
+  show() {
+    return this._root
       .transition()
-      .style('opacity', 1)
-      .on('end', callback);
+      .style('opacity', 1);
   }
 
-  hide(callback = () => {}) {
-    this._root
+  hide() {
+    return this._root
       .transition()
-      .style('opacity', 0)
-      .on('end', callback);
+      .style('opacity', 0);
   }
 
   click() {
@@ -312,7 +310,7 @@ export default class PopOut {
       return;
     }
 
-    this.hide(() => this.destroy());
+    this.hide().on('end', () => this.destroy());
   }
 
   _bind() {
