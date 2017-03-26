@@ -135,20 +135,16 @@ export default class PopOver {
     return this._slider;
   }
 
-  show() {
+  show(value) {
     const timeline = transition();
 
-    this._showFade(timeline);
-    this._showMove(timeline);
-
-    return timeline;
-  }
-
-  hide() {
-    const timeline = transition();
-
-    this._hideFade(timeline);
-    this._hideMove(timeline);
+    if (value === true) {
+      this._showFade(timeline);
+      this._showMove(timeline);
+    } else if (value === false) {
+      this._hideFade(timeline);
+      this._hideMove(timeline);
+    }
 
     return timeline;
   }
@@ -158,7 +154,7 @@ export default class PopOver {
       return;
     }
 
-    this.hide().on('end', () => this.destroy());
+    this.show(false).on('end', () => this.destroy());
   }
 
   _bind() {
@@ -257,8 +253,7 @@ export default class PopOver {
       .styles(this._styles)
       .start();
 
-    this.show();
-
+    this.show(true);
     return this;
   }
 

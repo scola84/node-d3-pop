@@ -36,7 +36,7 @@ export default class PopUp {
       });
 
     this._bind();
-    this.show();
+    this.show(true);
   }
 
   destroy() {
@@ -87,16 +87,10 @@ export default class PopUp {
     return this._body;
   }
 
-  show() {
+  show(value) {
     return this._root
       .transition()
-      .style('opacity', 1);
-  }
-
-  hide() {
-    return this._root
-      .transition()
-      .style('opacity', 0);
+      .style('opacity', Number(value));
   }
 
   click() {
@@ -104,7 +98,7 @@ export default class PopUp {
       return;
     }
 
-    this.hide().on('end', () => this.destroy());
+    this.show(false).on('end', () => this.destroy());
   }
 
   _bind() {

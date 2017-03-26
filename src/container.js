@@ -22,7 +22,11 @@ export default class Container {
 
   destroy() {
     this._unbind();
-    this._elements.forEach((element) => element.hide());
+
+    this._elements.forEach((element) => {
+      element.show(false);
+    });
+
     this._elements.clear();
 
     this._root.dispatch('destroy');

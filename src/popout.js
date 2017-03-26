@@ -72,7 +72,7 @@ export default class PopOut {
     this._handleRerender = debounce(() => this._rerender(), 100);
 
     this._bind();
-    this.show();
+    this.show(true);
   }
 
   destroy() {
@@ -293,16 +293,10 @@ export default class PopOut {
     return this;
   }
 
-  show() {
+  show(value) {
     return this._root
       .transition()
-      .style('opacity', 1);
-  }
-
-  hide() {
-    return this._root
-      .transition()
-      .style('opacity', 0);
+      .style('opacity', Number(value));
   }
 
   click() {
@@ -310,7 +304,7 @@ export default class PopOut {
       return;
     }
 
-    this.hide().on('end', () => this.destroy());
+    this.show(false).on('end', () => this.destroy());
   }
 
   _bind() {
