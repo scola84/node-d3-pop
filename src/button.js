@@ -106,12 +106,12 @@ export default class PopButton {
     if (this._direction === 'column') {
       this._border.style('display', 'none');
       this._root.style('border-top-color', () => {
-        return this._first ? 'transparent' : '#CCC';
+        return this._first === true ? 'transparent' : '#CCC';
       });
     } else if (this._direction === 'row') {
       this._root.style('border-top-color', '#CCC');
       this._border.style('display', () => {
-        return this._first ? 'none' : 'inline-flex';
+        return this._first === true ? 'none' : 'inline-flex';
       });
     }
 

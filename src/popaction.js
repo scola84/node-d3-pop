@@ -42,7 +42,7 @@ export default class PopAction extends PopOut {
       return this._deleteBody();
     }
 
-    if (!this._body) {
+    if (this._body === null) {
       this._insertBody();
     }
 

@@ -80,7 +80,7 @@ export default class PopUp {
       return this._deleteBody();
     }
 
-    if (!this._body) {
+    if (this._body === null) {
       this._insertBody();
     }
 
@@ -98,7 +98,9 @@ export default class PopUp {
       return;
     }
 
-    this.show(false).on('end', () => this.destroy());
+    this
+      .show(false)
+      .on('end', () => this.destroy());
   }
 
   _bind() {

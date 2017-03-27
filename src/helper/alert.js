@@ -10,10 +10,15 @@ export default class popAlert {
 
   destroy() {
     this._unbindOk();
-    this._popup.destroy();
+
+    this._popup
+      .show(false)
+      .on('end', () => {
+        this._popup.destroy();
+      });
   }
 
-  popup(){
+  popup() {
     return this._popup;
   }
 

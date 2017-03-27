@@ -146,7 +146,7 @@ export default class PopOut {
       return this._deleteMedia();
     }
 
-    if (!this._media) {
+    if (this._media === null) {
       this._insertMedia(width, height, styles);
     }
 
@@ -158,7 +158,7 @@ export default class PopOut {
       return this._deleteSlider();
     }
 
-    if (!this._slider) {
+    if (this._slider === null) {
       this._insertSlider();
     }
 
@@ -168,7 +168,7 @@ export default class PopOut {
   left() {
     this._positions.push('left');
 
-    if (this._fullScreen()) {
+    if (this._fullScreen() === true) {
       return this;
     }
 
@@ -190,7 +190,7 @@ export default class PopOut {
   right() {
     this._positions.push('right');
 
-    if (this._fullScreen()) {
+    if (this._fullScreen() === true) {
       return this;
     }
 
@@ -212,7 +212,7 @@ export default class PopOut {
   center() {
     this._positions.push('center');
 
-    if (this._fullScreen()) {
+    if (this._fullScreen() === true) {
       return this;
     }
 
@@ -232,7 +232,7 @@ export default class PopOut {
   top() {
     this._positions.push('top');
 
-    if (this._fullScreen()) {
+    if (this._fullScreen() === true) {
       return this;
     }
 
@@ -254,7 +254,7 @@ export default class PopOut {
   bottom() {
     this._positions.push('bottom');
 
-    if (this._fullScreen()) {
+    if (this._fullScreen() === true) {
       return this;
     }
 
@@ -276,7 +276,7 @@ export default class PopOut {
   middle() {
     this._positions.push('middle');
 
-    if (this._fullScreen()) {
+    if (this._fullScreen() === true) {
       return this;
     }
 
@@ -304,7 +304,9 @@ export default class PopOut {
       return;
     }
 
-    this.show(false).on('end', () => this.destroy());
+    this
+      .show(false)
+      .on('end', () => this.destroy());
   }
 
   _bind() {
@@ -643,7 +645,7 @@ export default class PopOut {
 
     this._isFullScreen = fullScreen;
 
-    if (fullScreen) {
+    if (fullScreen === true) {
       this._wrapper.styles({
         'left': '0px',
         'margin-left': null,

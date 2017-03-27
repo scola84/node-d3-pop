@@ -12,10 +12,7 @@ import PopConfirm from './src/helper/confirm';
 let instance = null;
 
 function container() {
-  if (!instance) {
-    instance = new Container();
-  }
-
+  instance = instance || new Container();
   return instance;
 }
 

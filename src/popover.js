@@ -116,7 +116,7 @@ export default class PopOver {
       return this._deleteMedia();
     }
 
-    if (!this._media) {
+    if (this._media === null) {
       this._insertMedia(width, height, styles);
     }
 
@@ -128,7 +128,7 @@ export default class PopOver {
       return this._deleteSlider();
     }
 
-    if (!this._slider) {
+    if (this._slider === null) {
       this._insertSlider();
     }
 
@@ -154,7 +154,9 @@ export default class PopOver {
       return;
     }
 
-    this.show(false).on('end', () => this.destroy());
+    this
+      .show(false)
+      .on('end', () => this.destroy());
   }
 
   _bind() {
