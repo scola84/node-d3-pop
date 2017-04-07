@@ -23,10 +23,10 @@ export default class PopButton {
       .append('div')
       .classed('scola border', true)
       .styles({
-        'background': '#CCC',
-        'height': '100%',
+        'border-left': '1px solid',
+        'border-left-color': 'inherit',
         'order': 1,
-        'width': '1px'
+        'width': 0
       });
 
     this._container = this._root
@@ -105,11 +105,11 @@ export default class PopButton {
   _style() {
     if (this._direction === 'column') {
       this._border.style('display', 'none');
-      this._root.style('border-top-color', () => {
+      this._root.style('border-color', () => {
         return this._first === true ? 'transparent' : '#CCC';
       });
     } else if (this._direction === 'row') {
-      this._root.style('border-top-color', '#CCC');
+      this._root.style('border-color', '#CCC');
       this._border.style('display', () => {
         return this._first === true ? 'none' : 'inline-flex';
       });
