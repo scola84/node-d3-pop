@@ -1,7 +1,7 @@
 import PopUp from '../popup';
 import PopButton from '../button';
 
-export default class popAlert {
+export default class PopAlert {
   constructor() {
     this._popup = new PopUp().lock(true);
     this._okButton = new PopButton();
