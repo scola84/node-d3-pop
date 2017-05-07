@@ -13,7 +13,7 @@ export default class PopButton {
         'border-top': '1px solid',
         'cursor': 'pointer',
         'display': 'flex',
-        'flex': 1,
+        'flex': 'auto',
         'height': '3em',
         'line-height': '3em',
         'text-align': 'center'
@@ -33,7 +33,7 @@ export default class PopButton {
       .append('div')
       .classed('scola text', true)
       .styles({
-        'flex': 1,
+        'flex': 'auto',
         'order': 2
       });
 
