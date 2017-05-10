@@ -102,6 +102,11 @@ export default class PopButton {
     return this;
   }
 
+  focus() {
+    this._text.node().focus();
+    return this;
+  }
+
   _style() {
     if (this._direction === 'column') {
       this._border.style('display', 'none');
