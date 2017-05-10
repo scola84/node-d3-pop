@@ -13,7 +13,7 @@ export default class PopAction extends PopOut {
       .classed('action', true);
 
     this._inner.styles({
-      'height': 'initial'
+      'height': null
     });
   }
 
@@ -55,10 +55,10 @@ export default class PopAction extends PopOut {
 
     const styles = Object.assign({}, this._styles, {
       'bottom': '0.5em',
-      'height': 'initial',
+      'height': null,
       'left': '0.5em',
       'right': '0.5em',
-      'width': 'initial'
+      'width': null
     });
 
     this._mediaInner = this._inner
