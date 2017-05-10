@@ -27,7 +27,13 @@ export default class PopAlert {
     return this;
   }
 
-  title(value) {
+  title(value = null) {
+    if (value === null) {
+      return this._popup
+        .body()
+        .title();
+    }
+
     this._popup
       .body()
       .title(value);
@@ -35,7 +41,13 @@ export default class PopAlert {
     return this;
   }
 
-  text(value) {
+  text(value = null) {
+    if (value === null) {
+      return this._popup
+        .body()
+        .text();
+    }
+
     this._popup
       .body()
       .text(value);
@@ -43,7 +55,11 @@ export default class PopAlert {
     return this;
   }
 
-  ok(text, callback = () => {}) {
+  ok(text = null, callback = () => {}) {
+    if (text === null) {
+      return this._okButton;
+    }
+
     this._okCallback = callback;
 
     this._okButton

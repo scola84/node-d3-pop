@@ -14,7 +14,11 @@ export default class PopConfirm extends PopAlert {
     super.destroy();
   }
 
-  cancel(text, callback = () => {}) {
+  cancel(text = null, callback = () => {}) {
+    if (text === null) {
+      return this._cancelButton;
+    }
+
     this._cancelCallback = callback;
 
     this._cancelButton
