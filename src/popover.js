@@ -290,8 +290,8 @@ export default class PopOver {
 
   _dimensions() {
     return {
-      bodyHeight: select('body').height(),
-      bodyWidth: select('body').width(),
+      bodyHeight: select('body').height(true),
+      bodyWidth: select('body').width(true),
       innerWidth: this._inner.width(),
       innerHeight: this._inner.height()
     };
