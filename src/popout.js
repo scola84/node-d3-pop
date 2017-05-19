@@ -18,7 +18,7 @@ export default class PopOut {
     this._media = null;
     this._slider = null;
 
-    this._fontSize = parseFloat(select('body').style('font-size'));
+    this._fontSize = select('body').computedStyle('font-size');
     this._isFullScreen = null;
     this._positions = [];
 
