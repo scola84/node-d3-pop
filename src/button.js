@@ -13,7 +13,7 @@ export default class PopButton {
         'border-top': '1px solid',
         'cursor': 'pointer',
         'display': 'flex',
-        'flex': 'auto',
+        'flex': '1 1 0%',
         'height': '3em',
         'line-height': '3em',
         'text-align': 'center'
@@ -33,11 +33,11 @@ export default class PopButton {
       .append('div')
       .classed('scola text', true)
       .styles({
-        'flex': 'auto',
+        'flex': '1 1 0%',
         'order': 2
       });
 
-    this._text = this._container
+    this._button = this._container
       .append('button')
       .attrs({
         'tabindex': -1,
@@ -51,6 +51,12 @@ export default class PopButton {
         'line-height': '2em',
         'margin': 0,
         'padding': '0 0.25em'
+      });
+
+    this._text = this._button
+      .append('span')
+      .styles({
+        'position': 'relative'
       });
 
     this._style();
@@ -86,10 +92,10 @@ export default class PopButton {
 
   tabindex(value = null) {
     if (value === null) {
-      return this._text.attr('tabindex');
+      return this._button.attr('tabindex');
     }
 
-    this._text.attr('tabindex', value);
+    this._button.attr('tabindex', value);
     return this;
   }
 
@@ -103,7 +109,7 @@ export default class PopButton {
   }
 
   focus() {
-    this._text.node().focus();
+    this._button.node().focus();
     return this;
   }
 
