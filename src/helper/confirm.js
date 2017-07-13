@@ -22,8 +22,14 @@ export default class PopConfirm extends PopAlert {
     this._cancelCallback = callback;
 
     this._cancelButton
-      .text(text)
-      .tabindex(0);
+      .button()
+      .attrs({
+        'tabindex': 0
+      });
+
+    this._cancelButton
+      .text()
+      .text(text);
 
     this._popup
       .body()

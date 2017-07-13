@@ -72,6 +72,14 @@ export default class PopButton {
     return this._root;
   }
 
+  button() {
+    return this._button;
+  }
+
+  text() {
+    return this._text;
+  }
+
   first(value = null) {
     if (value === null) {
       return this._first;
@@ -88,29 +96,6 @@ export default class PopButton {
 
     this._direction = value;
     return this._style();
-  }
-
-  tabindex(value = null) {
-    if (value === null) {
-      return this._button.attr('tabindex');
-    }
-
-    this._button.attr('tabindex', value);
-    return this;
-  }
-
-  text(value = null) {
-    if (value === null) {
-      return this._text;
-    }
-
-    this._text.text(value);
-    return this;
-  }
-
-  focus() {
-    this._button.node().focus();
-    return this;
   }
 
   _style() {

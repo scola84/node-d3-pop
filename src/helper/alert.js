@@ -63,8 +63,14 @@ export default class PopAlert {
     this._okCallback = callback;
 
     this._okButton
-      .text(text)
-      .tabindex(0);
+      .button()
+      .attrs({
+        'tabindex': 0
+      });
+
+    this._okButton
+      .text()
+      .text(text);
 
     this._popup
       .body()
