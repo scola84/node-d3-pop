@@ -98,6 +98,10 @@ export default class PopUp {
       return;
     }
 
+    this.close();
+  }
+
+  close() {
     this
       .show(false)
       .on('end', () => this.destroy());

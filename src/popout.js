@@ -304,6 +304,10 @@ export default class PopOut {
       return;
     }
 
+    this.close();
+  }
+
+  close() {
     this
       .show(false)
       .on('end', () => this.destroy());

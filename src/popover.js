@@ -154,6 +154,10 @@ export default class PopOver {
       return;
     }
 
+    this.close();
+  }
+
+  close() {
     this
       .show(false)
       .on('end', () => this.destroy());
