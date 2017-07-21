@@ -49,7 +49,6 @@ export default class PopOut {
       .append('div')
       .classed('scola inner', true)
       .styles({
-        'background': '#FFF',
         'border-radius': 'inherit',
         'height': '100%',
         'overflow': 'hidden',

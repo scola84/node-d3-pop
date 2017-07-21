@@ -41,7 +41,6 @@ export default class PopOver {
       .append('div')
       .classed('scola inner', true)
       .styles({
-        'background': '#FFF',
         'height': '100%',
         'overflow': 'hidden',
         'position': 'relative',
