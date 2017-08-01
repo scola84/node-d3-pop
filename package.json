@@ -1,6 +1,6 @@
 {
   "name": "@scola/d3-pop",
-  "version": "2.1.3",
+  "version": "3.0.0",
   "description": "Pop-Action-Over-Out-Up",
   "repository": "github:scola84/node-d3-pop",
   "author": "M.C. van den Boogaart <scola@kvdb.name>",
